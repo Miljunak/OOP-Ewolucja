@@ -1,6 +1,6 @@
 package agh.proj.oop;
 
 public class AbstractWorldElement {
-    private Vector2d pos;
-    public Vector2d getPos() { return pos;}
+    protected Vector2d position;
+    public Vector2d getPos() { return position;}
 }

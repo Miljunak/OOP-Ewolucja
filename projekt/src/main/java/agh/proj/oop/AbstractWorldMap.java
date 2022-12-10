@@ -2,10 +2,12 @@ package agh.proj.oop;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class AbstractWorldMap {
+public class AbstractWorldMap implements IObserver {
     public int width;
     public int height;
+    public int day = 0;
     public HashMap<Vector2d, HashSet<AbstractWorldElement> > elements;
 
     public AbstractWorldMap(int width, int height ) {
@@ -42,4 +44,15 @@ public class AbstractWorldMap {
         return (position.x >= 0 && position.y >= 0) && (position.x < this.width && position.y < this.height);
     }
 
+    public Vector2d getRandom() {
+        return new Vector2d(ThreadLocalRandom.current().nextInt(0, width), ThreadLocalRandom.current().nextInt(0, height));
+    }
+
+    public void addGrass(int n) {
+        for (int i = 0; i < n; i++ ) this.addElement(new Grass(getRandom()));
+    }
+    @Override
+    public void positionChanged(Vector2d oldPos, Vector2d newPos) {
+
+    }
 }
