@@ -30,10 +30,11 @@ public class Animal extends AbstractWorldElement{
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;
         int y = (dir == 6 || dir == 2) ? 0 : (abs(dir - 4) < 2) ? -1 : 1;
         Vector2d newPos = new Vector2d(position.x + x, position.y + y);
+        gIndex = (gIndex+1)%genotype.size();
         if (map.canMoveTo(newPos)) {
             map.removeElement(this);
             position = newPos;
-            gIndex = gIndex%genotype.size();
+            //gIndex = gIndex%genotype.size();
             map.addElement(this);
             return true;
         }
