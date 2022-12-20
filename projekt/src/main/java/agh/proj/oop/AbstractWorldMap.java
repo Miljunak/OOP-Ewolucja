@@ -28,6 +28,7 @@ public class AbstractWorldMap implements IObserver {
     public void addElement(AbstractWorldElement element) {
         Vector2d position = element.getPos();
         if (element instanceof Animal) {
+            //System.out.println(((Animal) element).genotype);
             animals.add((Animal) element);
         }
         if (!elements.containsKey(position)) {
@@ -38,6 +39,15 @@ public class AbstractWorldMap implements IObserver {
 
     public void removeElement(AbstractWorldElement element) {
         Vector2d position = element.getPos();
+        if (element instanceof Animal) {
+            for (int i = 0; i < animals.size(); i++) {
+                if (element == animals.get(i)) {
+                    //System.out.println(((Animal) element).genotype);
+                    animals.remove(i);
+                    break;
+                }
+            }
+        }
         if (!elements.containsKey(position)) {
             throw new IllegalArgumentException("no elements at position " + position.toString());
         }
@@ -61,10 +71,9 @@ public class AbstractWorldMap implements IObserver {
     }
 
     public void nextMove() {
-        for (int i=0; i<animals.size(); i++) {
-           // System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction);
+        for (int i = 0; i < animals.size(); i++) {
+            System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction + " " + animals.get(i).position);
             animals.get(i).move();
-            //System.out.println("testetestset");
         }
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;

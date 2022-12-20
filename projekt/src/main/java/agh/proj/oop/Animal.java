@@ -14,32 +14,29 @@ public class Animal extends AbstractWorldElement{
     public int death;
     private int gIndex;
     public ArrayList<Integer> genotype = new ArrayList<>();
-    public Animal(AbstractWorldMap map, int birth, int energy, int n) {
+    public Animal(AbstractWorldMap map, int birth, int energy, int gLength) {
         this.gIndex = 0;
         this.birth = birth;
         this.energy = energy;
         this.map = map;
         this.position = map.getRandom();
         this.direction = ThreadLocalRandom.current().nextInt(0, 8);
-        for (int i = 0; i < n; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
-        observers.add(map);
+        for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
+        //observers.add(map);
     }
 
-    public boolean move() {
+    public void move() {
         int dir = (direction + genotype.get(gIndex))%8;
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;
         int y = (dir == 6 || dir == 2) ? 0 : (abs(dir - 4) < 2) ? -1 : 1;
         Vector2d newPos = new Vector2d(position.x + x, position.y + y);
-        gIndex = (gIndex+1)%genotype.size();
+        gIndex = (gIndex + 1)%genotype.size();
+        direction = dir;
         if (map.canMoveTo(newPos)) {
             map.removeElement(this);
             position = newPos;
-            //gIndex = gIndex%genotype.size();
             map.addElement(this);
-            return true;
         }
-        direction = dir;
-        return false;
     }
 
 
