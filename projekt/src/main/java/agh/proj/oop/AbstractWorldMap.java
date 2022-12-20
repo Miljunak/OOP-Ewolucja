@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbstractWorldMap implements IObserver {
+    final int BREEDENERGY = 25;
     public int width;
     public int height;
     public int day = 0;
