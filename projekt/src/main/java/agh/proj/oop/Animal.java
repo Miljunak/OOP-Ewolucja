@@ -32,12 +32,12 @@ public class Animal extends AbstractWorldElement{
         Vector2d newPos = new Vector2d(position.x + x, position.y + y);
         if (map.canMoveTo(newPos)) {
             map.removeElement(this);
-            direction = dir;
             position = newPos;
             gIndex = gIndex%genotype.size();
             map.addElement(this);
             return true;
         }
+        direction = dir;
         return false;
     }
 
@@ -45,7 +45,7 @@ public class Animal extends AbstractWorldElement{
 
     @Override
     public String toString() {
-        return genotype.toString() + getPos();
+        return "";
     }
 
 }
