@@ -48,6 +48,7 @@ public class Animal extends AbstractWorldElement{
             map.addElement(this);
         }
         energy--;
+        if (map.eatGrass(this.position)) energy += 10;
         if (energy <= 0) this.death = map.mementoMori(this);
     }
 

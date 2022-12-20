@@ -69,7 +69,23 @@ public class AbstractWorldMap implements IObserver {
     }
 
     public void addGrass(int n) {
-        for (int i = 0; i < n; i++ ) this.addElement(new Grass(getRandom()));
+        for (int i = 0; i < n; i++ ) {
+            Vector2d tmp = getRandom();
+            while (objectsAt(tmp) != null) tmp = getRandom();
+            this.addElement(new Grass(tmp));
+        }
+    }
+    public boolean hasGrass(Vector2d position) {
+        return elements.get(position).stream().anyMatch(obj -> obj instanceof Grass);
+    }
+
+    public boolean eatGrass(Vector2d position) {
+        if (hasGrass(position)) {
+            HashSet<AbstractWorldElement> set = elements.get(position);
+            set.removeIf(obj -> obj instanceof Grass);
+            return true;
+        }
+        return false;
     }
 
     public void nextMove() {

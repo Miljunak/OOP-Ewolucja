@@ -7,6 +7,6 @@ public class Grass extends AbstractWorldElement {
 
     @Override
     public String toString() {
-        return getPos().toString();
+        return "*";
     }
 }
