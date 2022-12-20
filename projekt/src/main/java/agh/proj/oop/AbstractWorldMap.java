@@ -27,7 +27,6 @@ public class AbstractWorldMap implements IObserver {
 
     /**
      * Function to create a new animal in map, likely going to be used when breeding is implemented.
-     * @param animal
      */
     public void giveBirth(Animal animal) {
         animals.add(animal);
@@ -36,10 +35,8 @@ public class AbstractWorldMap implements IObserver {
 
     /**
      * Function to kill and remove an animal from the simulation.
-     * @param animal
      * @return death_date
      */
-
     public int mementoMori(Animal animal) {
         animals.remove(animal);
         removeElement(animal);
@@ -66,10 +63,6 @@ public class AbstractWorldMap implements IObserver {
         if (elements.get(position).isEmpty()) elements.remove(position);
     }
 
-    public boolean canMoveTo(Vector2d position) {
-        return (position.x >= 0 && position.y >= 0) && (position.x < this.width && position.y < this.height);
-    }
-
     public Vector2d getRandom() {
         return new Vector2d(ThreadLocalRandom.current().nextInt(0, width), ThreadLocalRandom.current().nextInt(0, height));
     }
@@ -85,6 +78,17 @@ public class AbstractWorldMap implements IObserver {
         }
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
+    }
+
+    /**
+     * This function is going to be used to determine if animal should be 'teleported' somewhere depending
+     * on the style of map ( for example globe loops animal sideways )
+     */
+    public Vector2d canMoveTo(Vector2d oldPosition, Vector2d newPosition) {
+        if ((newPosition.x >= 0 && newPosition.y >= 0) && (newPosition.x < this.width && newPosition.y < this.height)) {
+            return newPosition;
+        }
+        return oldPosition;
     }
     @Override
     public void positionChanged(Vector2d oldPos, Vector2d newPos) {

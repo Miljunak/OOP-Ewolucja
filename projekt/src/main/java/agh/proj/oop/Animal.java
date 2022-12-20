@@ -31,18 +31,18 @@ public class Animal extends AbstractWorldElement{
 
     public void move() {
         if (energy == 0) {
-            death = map.mementoMori(this);
+            this.death = map.mementoMori(this);
             return;
         }
         int dir = (direction + genotype.get(gIndex))%8;
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;
         int y = (dir == 6 || dir == 2) ? 0 : (abs(dir - 4) < 2) ? -1 : 1;
-        Vector2d newPos = new Vector2d(position.x + x, position.y + y);
-        gIndex = (gIndex + 1)%genotype.size();
+        Vector2d newPos = map.canMoveTo(this.position, new Vector2d(position.x + x, position.y + y));
         direction = dir;
-        if (map.canMoveTo(newPos)) {
+        gIndex = (gIndex + 1)%genotype.size();
+        if (!newPos.equals(this.position)) {
             map.removeElement(this);
-            position = newPos;
+            this.position = newPos;
             map.addElement(this);
         }
         energy--;
