@@ -25,7 +25,15 @@ public class Animal extends AbstractWorldElement{
         //observers.add(map);
     }
 
+    /**
+     * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
+     */
+
     public void move() {
+        if (energy == 0) {
+            death = map.mementoMori(this);
+            return;
+        }
         int dir = (direction + genotype.get(gIndex))%8;
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;
         int y = (dir == 6 || dir == 2) ? 0 : (abs(dir - 4) < 2) ? -1 : 1;
@@ -37,6 +45,7 @@ public class Animal extends AbstractWorldElement{
             position = newPos;
             map.addElement(this);
         }
+        energy--;
     }
 
 

@@ -25,12 +25,29 @@ public class AbstractWorldMap implements IObserver {
         return elements.getOrDefault(position, null);
     }
 
+    /**
+     * Function to create a new animal in map, likely going to be used when breeding is implemented.
+     * @param animal
+     */
+    public void giveBirth(Animal animal) {
+        animals.add(animal);
+        addElement(animal);
+    }
+
+    /**
+     * Function to kill and remove an animal from the simulation.
+     * @param animal
+     * @return death_date
+     */
+
+    public int mementoMori(Animal animal) {
+        animals.remove(animal);
+        removeElement(animal);
+        return day;
+    }
+
     public void addElement(AbstractWorldElement element) {
         Vector2d position = element.getPos();
-        if (element instanceof Animal) {
-            //System.out.println(((Animal) element).genotype);
-            animals.add((Animal) element);
-        }
         if (!elements.containsKey(position)) {
             elements.put(position, new HashSet<>());
         }
@@ -39,15 +56,6 @@ public class AbstractWorldMap implements IObserver {
 
     public void removeElement(AbstractWorldElement element) {
         Vector2d position = element.getPos();
-        if (element instanceof Animal) {
-            for (int i = 0; i < animals.size(); i++) {
-                if (element == animals.get(i)) {
-                    //System.out.println(((Animal) element).genotype);
-                    animals.remove(i);
-                    break;
-                }
-            }
-        }
         if (!elements.containsKey(position)) {
             throw new IllegalArgumentException("no elements at position " + position.toString());
         }
