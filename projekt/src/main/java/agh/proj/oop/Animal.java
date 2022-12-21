@@ -7,7 +7,7 @@ import static java.lang.Math.abs;
 
 public class Animal extends AbstractWorldElement{
     public AbstractWorldMap map;
-    public ArrayList<IObserver> observers = new ArrayList<>();
+
     public int direction;
     public int energy;
     public int birth;
@@ -24,7 +24,6 @@ public class Animal extends AbstractWorldElement{
         for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
         //observers.add(map);
     }
-
     /**
      * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
      */

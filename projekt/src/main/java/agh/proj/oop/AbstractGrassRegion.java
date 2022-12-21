@@ -3,10 +3,10 @@ package agh.proj.oop;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AbstractGrassRegion {
-    private AbstractWorldMap map;
-    private int[][] priorities;
-    private int maxPriority;
+abstract public class AbstractGrassRegion {
+    protected AbstractWorldMap map;
+    protected int[][] priorities;
+    protected int maxPriority;
     public AbstractGrassRegion(AbstractWorldMap map){
         maxPriority=0;
         this.map=map;
