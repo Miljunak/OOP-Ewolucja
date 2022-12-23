@@ -13,13 +13,21 @@ public class AbstractWorldMap implements IObserver {
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, HashSet<AbstractWorldElement> > elements;
+    public AbstractGrassRegion grassRegion;
 
-    public AbstractWorldMap(int width, int height ) {
+    public AbstractWorldMap(int width, int height, int grassVariant ) {
         this.width = width;
         this.height = height;
         this.elements = new HashMap<>();
         this.visualizer = new MapVisualizer(this);
         this.animals = new ArrayList<>();
+        if(grassVariant==1){
+            this.grassRegion=new EquatorGrassRegion(this);
+        }
+        else{
+            this.grassRegion=new ToxicGrassRegion(this);
+        }
+        grassRegion.setPriority(0);
     }
 
     public HashSet<AbstractWorldElement> objectsAt(Vector2d position) {
@@ -68,12 +76,12 @@ public class AbstractWorldMap implements IObserver {
         return new Vector2d(ThreadLocalRandom.current().nextInt(0, width), ThreadLocalRandom.current().nextInt(0, height));
     }
 
-    public void addGrass(int n) {
-        for (int i = 0; i < n; i++ ) {
-            Vector2d tmp = getRandom();
-            while (objectsAt(tmp) != null) tmp = getRandom();
+    public void addGrass() {
+            Vector2d tmp = grassRegion.getRandomField();
+            //Trawia nie rośnie tam, gdzie stoją zwierzęta: feature until proven otherwise
+            while (objectsAt(tmp) != null) tmp = grassRegion.getRandomField();
             this.addElement(new Grass(tmp));
-        }
+
     }
     public boolean hasGrass(Vector2d position) {
         return elements.get(position).stream().anyMatch(obj -> obj instanceof Grass);
@@ -93,8 +101,10 @@ public class AbstractWorldMap implements IObserver {
             System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction + " " + animals.get(i).position);
             animals.get(i).move();
         }
+        addGrass();
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
+
     }
 
     /**

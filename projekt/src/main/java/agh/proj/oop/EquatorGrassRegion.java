@@ -1,6 +1,6 @@
 package agh.proj.oop;
 
-public class EquatorGrassRegion extends AbstractGrassRegion2{
+public class EquatorGrassRegion extends AbstractGrassRegion {
     public EquatorGrassRegion(AbstractWorldMap map){
         super(map);
     }

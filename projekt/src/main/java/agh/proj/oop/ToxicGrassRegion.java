@@ -1,18 +1,18 @@
 package agh.proj.oop;
 
-public class ToxicGrassRegion extends AbstractGrassRegion2 {
+public class ToxicGrassRegion extends AbstractGrassRegion {
     public ToxicGrassRegion(AbstractWorldMap map){
         super(map);
     }
     @Override
     public void setPriority(int priority){
-        for(int i=0; i<map.width; i++) {
+        for(int i = 0; i < map.width; i++) {
             for (int j = 0; j < map.height; j++) {
-                if(priorities[i][j]>priority){
-                    lowPriority.add(new Vector2d(i,j));
+                if(priorities[i][j] > priority) {
+                    lowPriority.add(new Vector2d(i, j));
                 }
-                else{
-                    highPriority.add(new Vector2d(i,j));
+                else {
+                    highPriority.add(new Vector2d(i, j));
                 }
 
             }

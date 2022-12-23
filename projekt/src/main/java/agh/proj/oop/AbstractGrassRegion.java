@@ -5,54 +5,41 @@ import java.util.Random;
 
 abstract public class AbstractGrassRegion {
     protected AbstractWorldMap map;
+    ArrayList<Vector2d> highPriority;
+    ArrayList<Vector2d> lowPriority;
     protected int[][] priorities;
     protected int maxPriority;
     public AbstractGrassRegion(AbstractWorldMap map){
         maxPriority=0;
         this.map=map;
+        highPriority = new ArrayList<Vector2d>();
+        lowPriority = new ArrayList<Vector2d>();
         priorities=new int[map.width][map.height];
         for(int i=0; i<map.width; i++){
             for(int j=0; j<map.height; j++){
                 priorities[i][j]=0;
             }
         }
+    }
+    //Funkcja przechodzi przez wszystkie pola i dodaje je odpowiednio do highPriority/lowPriority
+    public void setPriority(int priority){
 
     }
-    public void setPriority(){
+    public void updatePriority(Vector2d v){
 
     }
     public Vector2d getRandomField(){
         Random rand = new Random();
         int randomNum = rand.nextInt(10);
-        boolean found= false;
-        Vector2d result= new Vector2d(-1,-1);
-        if(randomNum<7){
-            maxPriority-=1;
-            while(!found){
-                maxPriority+=1;
-                for(int i=0; i<map.width; i++){
-                    for(int j=0; j<map.height; j++){
-                        if(priorities[i][j]==maxPriority){
-                            found = true;
-                            result.x=i;
-                            result.y=j;
-                        }
-                    }
-                }
-            }
+        int rng;
+        if(randomNum<8 || lowPriority.size()==0){
+            rng=rand.nextInt(highPriority.size());
+            return highPriority.get(rng);
         }
         else{
-            for(int i=0; i<map.width; i++){
-                for(int j=0; j<map.height; j++){
-                    if(priorities[i][j]==maxPriority){
-                        found = true;
-                        result.x=i;
-                        result.y=j;
-                    }
-                }
+            rng=rand.nextInt(lowPriority.size());
+            return lowPriority.get(rng);
         }
 
-    }
-        return new Vector2d(1,1);
     }
 }

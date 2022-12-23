@@ -1,8 +1,8 @@
 package agh.proj.oop;
 
 public class GlobeMap extends AbstractWorldMap {
-    public GlobeMap(int width, int height) {
-        super(width, height);
+    public GlobeMap(int width, int height, int grassVariant) {
+        super(width, height, grassVariant);
     }
 
     @Override
