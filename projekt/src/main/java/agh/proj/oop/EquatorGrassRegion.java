@@ -19,7 +19,7 @@ public class EquatorGrassRegion extends AbstractGrassRegion {
                 }
                 //Przypadek 2: map.height parzyste
                 else {
-                    if (j <= midpoint+2 && j >= midpoint-1) {
+                    if (j <= midpoint+1 && j >= midpoint-2) {
                         highPriority.add(new Vector2d(i, j));
                     }
                     else lowPriority.add(new Vector2d(i,j));
