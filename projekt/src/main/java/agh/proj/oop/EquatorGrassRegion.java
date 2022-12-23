@@ -12,14 +12,14 @@ public class EquatorGrassRegion extends AbstractGrassRegion {
             for (int j = 0; j < map.height; j++) {
                 //Przypadek 1: map.height nieparzyste
                 if (midpoint*2 < map.height) {
-                    if (j <= midpoint+1 && j >= midpoint-1) {
+                    if (j <= (midpoint)+(map.height/10)+1&& j >=(midpoint)-(map.height/10)-1) {
                         highPriority.add(new Vector2d(i, j));
                     }
                     else lowPriority.add(new Vector2d(i, j));
                 }
                 //Przypadek 2: map.height parzyste
                 else {
-                    if (j <= midpoint+1 && j >= midpoint-2) {
+                    if (j <= (midpoint)+(map.height/10)+1 && j >= (midpoint)-(map.height/10)-2) {
                         highPriority.add(new Vector2d(i, j));
                     }
                     else lowPriority.add(new Vector2d(i,j));

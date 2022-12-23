@@ -13,7 +13,7 @@ public class World {
         //map.addGrass(5);
 
         SimulationEngine engine = new SimulationEngine(map, grassRegion);
-        engine.run(20);
+        engine.run(200);
 
     }
 }
