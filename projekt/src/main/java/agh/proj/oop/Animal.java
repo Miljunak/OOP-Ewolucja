@@ -55,7 +55,11 @@ public class Animal extends AbstractWorldElement{
 
     @Override
     public String toString() {
-        return "";
+        //NASTEPUJACA CZESC KODU MUSI ZOSTAC USUNIETA, JEST WYKORZYSTYWANA DO TESTOW
+        if (this.genotype.size() == 10) return "L";
+        else return "J";
+        //KONIEC KODU TESTOWEGO
+        //return "";
     }
 
 }

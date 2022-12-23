@@ -14,7 +14,6 @@ public class ToxicGrassRegion extends AbstractGrassRegion {
                 else {
                     highPriority.add(new Vector2d(i, j));
                 }
-
             }
         }
     }
