@@ -1,7 +1,9 @@
 package agh.proj.oop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 abstract public class AbstractGrassRegion {
     protected AbstractWorldMap map;
@@ -9,17 +11,13 @@ abstract public class AbstractGrassRegion {
     ArrayList<Vector2d> lowPriority;
     protected int[][] priorities;
     protected int maxPriority;
-    public AbstractGrassRegion(AbstractWorldMap map){
-        maxPriority=0;
-        this.map=map;
-        highPriority = new ArrayList<Vector2d>();
-        lowPriority = new ArrayList<Vector2d>();
-        priorities=new int[map.width][map.height];
-        for(int i=0; i<map.width; i++){
-            for(int j=0; j<map.height; j++){
-                priorities[i][j]=0;
-            }
-        }
+    public AbstractGrassRegion(AbstractWorldMap map) {
+        this.maxPriority = 0;
+        this.map = map;
+        this.highPriority = new ArrayList<Vector2d>();
+        this.lowPriority = new ArrayList<Vector2d>();
+        this.priorities = new int[map.width][map.height];
+        IntStream.range(0, map.width).forEach(i -> Arrays.fill(priorities[i], 0));
     }
     //Funkcja przechodzi przez wszystkie pola i dodaje je odpowiednio do highPriority/lowPriority
     public void setPriority(int priority){
@@ -28,18 +26,12 @@ abstract public class AbstractGrassRegion {
     public void updatePriority(Vector2d v){
 
     }
-    public Vector2d getRandomField(){
+    public Vector2d getRandomField() {
         Random rand = new Random();
-        int randomNum = rand.nextInt(10);
-        int rng;
-        if(randomNum<8 || lowPriority.size()==0){
-            rng=rand.nextInt(highPriority.size());
-            return highPriority.get(rng);
+        if (rand.nextInt(10) < 8 || lowPriority.size() == 0) {
+            return highPriority.get(rand.nextInt(highPriority.size()));
         }
-        else{
-            rng=rand.nextInt(lowPriority.size());
-            return lowPriority.get(rng);
-        }
+        else return lowPriority.get(rand.nextInt(lowPriority.size()));
 
     }
 }

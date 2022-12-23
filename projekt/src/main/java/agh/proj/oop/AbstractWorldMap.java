@@ -21,12 +21,8 @@ public class AbstractWorldMap implements IObserver {
         this.elements = new HashMap<>();
         this.visualizer = new MapVisualizer(this);
         this.animals = new ArrayList<>();
-        if(grassVariant==1){
-            this.grassRegion=new EquatorGrassRegion(this);
-        }
-        else{
-            this.grassRegion=new ToxicGrassRegion(this);
-        }
+        if(grassVariant == 1) this.grassRegion = new EquatorGrassRegion(this);
+        else this.grassRegion = new ToxicGrassRegion(this);
         grassRegion.setPriority(0);
     }
 
