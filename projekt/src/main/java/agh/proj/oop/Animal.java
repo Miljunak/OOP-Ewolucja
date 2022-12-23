@@ -14,6 +14,7 @@ public class Animal extends AbstractWorldElement{
     public int death;
     private int gIndex;
     public ArrayList<Integer> genotype = new ArrayList<>();
+    public boolean breedStatus;
     public Animal(AbstractWorldMap map, int birth, int energy, int gLength) {
         this.gIndex = 0;
         this.birth = birth;
@@ -22,6 +23,7 @@ public class Animal extends AbstractWorldElement{
         this.position = map.getRandom();
         this.direction = ThreadLocalRandom.current().nextInt(0, 8);
         for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
+        this.breedStatus = true;
         //observers.add(map);
     }
     /**
@@ -51,15 +53,19 @@ public class Animal extends AbstractWorldElement{
         if (energy <= 0) this.death = map.mementoMori(this);
     }
 
-
+    @Override
+    public boolean isHealthy() {
+        //STALA 15 POZNIEJ BEDZIE JEDNYM Z POTRZEBNYCH INPUTOW
+        return this.energy > 15 && this.breedStatus;
+    }
 
     @Override
     public String toString() {
         //NASTEPUJACA CZESC KODU MUSI ZOSTAC USUNIETA, JEST WYKORZYSTYWANA DO TESTOW
         if (this.genotype.size() == 10) return "L";
-        else return "J";
+        else if (this.genotype.size() == 5) return "J";
         //KONIEC KODU TESTOWEGO
-        //return "";
+        return "X";
     }
 
 }

@@ -4,7 +4,6 @@ public class SimulationEngine {
     public AbstractWorldMap map;
     public AbstractGrassRegion grassRegion;
     SimulationEngine(AbstractWorldMap map, AbstractGrassRegion grassRegion) {
-
         this.map = map;
         this.grassRegion=grassRegion;
     }

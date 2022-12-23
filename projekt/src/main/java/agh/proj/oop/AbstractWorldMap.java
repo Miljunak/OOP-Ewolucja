@@ -2,17 +2,18 @@ package agh.proj.oop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbstractWorldMap implements IObserver {
+
+    boolean REMOVELATER = true;
     final int BREEDENERGY = 25;
     public int width;
     public int height;
     public int day = 0;
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
-    public HashMap<Vector2d, HashSet<AbstractWorldElement> > elements;
+    public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
     public AbstractGrassRegion grassRegion;
 
     public AbstractWorldMap(int width, int height, int grassVariant ) {
@@ -26,7 +27,7 @@ public class AbstractWorldMap implements IObserver {
         grassRegion.setPriority(0);
     }
 
-    public HashSet<AbstractWorldElement> objectsAt(Vector2d position) {
+    public ArrayList<AbstractWorldElement> objectsAt(Vector2d position) {
         return elements.getOrDefault(position, null);
     }
 
@@ -51,7 +52,7 @@ public class AbstractWorldMap implements IObserver {
     public void addElement(AbstractWorldElement element) {
         Vector2d position = element.getPos();
         if (!elements.containsKey(position)) {
-            elements.put(position, new HashSet<>());
+            elements.put(position, new ArrayList<>());
         }
         elements.get(position).add(element);
     }
@@ -85,22 +86,11 @@ public class AbstractWorldMap implements IObserver {
 
     public boolean eatGrass(Vector2d position) {
         if (hasGrass(position)) {
-            HashSet<AbstractWorldElement> set = elements.get(position);
+            ArrayList<AbstractWorldElement> set = elements.get(position);
             set.removeIf(obj -> obj instanceof Grass);
             return true;
         }
         return false;
-    }
-
-    public void nextMove() {
-        for (int i = 0; i < animals.size(); i++) {
-            System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction + " " + animals.get(i).position);
-            animals.get(i).move();
-        }
-        addGrass();
-        System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
-        day++;
-
     }
 
     /**
@@ -112,6 +102,41 @@ public class AbstractWorldMap implements IObserver {
             return newPosition;
         }
         return oldPosition;
+    }
+    public void canBreed(Animal father) {
+        ArrayList<AbstractWorldElement> currentTile = objectsAt(father.position);
+        Animal mother = null;
+        for (AbstractWorldElement element : currentTile) {
+            if (element.isHealthy() && element != father) {
+                mother = (Animal) element;
+                break;
+            }
+        }
+        if (mother != null) {
+            int fatherGenotype = father.energy / (father.energy + mother.energy);
+            int motherGenotype = mother.energy / (father.energy + mother.energy);
+            mother.energy -= BREEDENERGY;
+            father.energy -= BREEDENERGY;
+            mother.breedStatus = false;
+            father.breedStatus = false;
+            this.giveBirth(new Animal(this, this.day, 30, 7));
+        }
+    }
+    public void nextMove() {
+        if (REMOVELATER) {
+            System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
+            REMOVELATER = false;
+        }
+        for (int i = 0; i < animals.size(); i++) {
+            System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction + " " + animals.get(i).position);
+            animals.get(i).move();
+        }
+        addGrass();
+        System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
+        day++;
+        //System.out.println(animals.size());
+        for (int i = 0; i < animals.size(); i++) this.canBreed(animals.get(i));
+        for (Animal animal : animals) animal.breedStatus = true;
     }
     @Override
     public void positionChanged(Vector2d oldPos, Vector2d newPos) {
