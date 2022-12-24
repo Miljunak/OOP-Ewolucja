@@ -11,6 +11,7 @@ public class AbstractWorldMap implements IObserver {
     public int width;
     public int height;
     public int day = 0;
+    public int energyConstant=4;
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;

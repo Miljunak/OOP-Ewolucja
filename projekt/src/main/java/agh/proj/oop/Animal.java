@@ -1,6 +1,7 @@
 package agh.proj.oop;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.abs;
@@ -25,6 +26,52 @@ public class Animal extends AbstractWorldElement{
         for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
         this.breedStatus = true;
         //observers.add(map);
+    }
+    public Animal(Animal a, Animal b){
+        this.gIndex = 0;
+        this.birth = a.map.day;//na co wskazuje birth? dzień symulacji???
+        this.energy = 2*a.map.energyConstant;
+        this.map = a.map;
+        this.position = a.position;
+        this.direction = ThreadLocalRandom.current().nextInt(0, 8);
+        Random rand = new Random();
+        Animal stronger;
+        Animal weaker;
+        if(a.energy>b.energy){
+            stronger=a;
+            weaker=b;
+        }
+        else{
+            stronger=b;
+            weaker=a;
+        }
+        int side=rand.nextInt(2);
+        float ratio = stronger.energy/(weaker.energy+stronger.energy);
+        if(side==0){
+            int i=0;
+            while(i<a.genotype.size()*ratio){
+                genotype.add(stronger.genotype.get(i));
+                i++;
+            }
+            while(i<a.genotype.size()){
+                genotype.add(weaker.genotype.get(i));
+                i++;
+            }
+        }
+        else{
+            int i=a.genotype.size()-1;
+            while(i>a.genotype.size()-a.genotype.size()*ratio){
+                genotype.add(stronger.genotype.get(i));
+                i--;
+            }
+            while(i>0){
+                genotype.add(weaker.genotype.get(i));
+                i--;
+            }
+            }
+            //genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
+
+        this.breedStatus = true;
     }
     /**
      * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
