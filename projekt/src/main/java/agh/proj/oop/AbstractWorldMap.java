@@ -8,10 +8,10 @@ public class AbstractWorldMap implements IObserver {
 
     boolean REMOVELATER = true;
     final int BREEDENERGY = 25;
+    final int energyConstant = 4;
     public int width;
     public int height;
     public int day = 0;
-    public int energyConstant = 4;
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
@@ -19,7 +19,9 @@ public class AbstractWorldMap implements IObserver {
     public ArrayList<Animal> waitingChildren;
     public ArrayList<Animal> deadAnimals;
 
-    public AbstractWorldMap(int width, int height, boolean isToxic ) {
+    public int grassCount;
+
+    public AbstractWorldMap(int width, int height, boolean isToxic) {
         this.width = width;
         this.height = height;
         this.elements = new HashMap<>();
@@ -29,6 +31,7 @@ public class AbstractWorldMap implements IObserver {
         this.deadAnimals = new ArrayList<>();
         this.grassRegion = (isToxic) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
         grassRegion.setPriority(0);
+        this.grassCount = 0;
     }
 
     public ArrayList<AbstractWorldElement> objectsAt(Vector2d position) {
@@ -77,10 +80,12 @@ public class AbstractWorldMap implements IObserver {
     }
 
     public void addGrass() {
-            Vector2d tmp = grassRegion.getRandomField();
-            //Trawia nie rośnie tam, gdzie stoją zwierzęta: feature until proven otherwise
-            while (objectsAt(tmp) != null) tmp = grassRegion.getRandomField();
-            this.addElement(new Grass(tmp));
+        if (grassCount + animals.size() == width * height) return;
+        Vector2d tmp = grassRegion.getRandomField();
+        //Trawia nie rośnie tam, gdzie stoją zwierzęta: feature until proven otherwise
+        while (objectsAt(tmp) != null) tmp = grassRegion.getRandomField();
+        this.addElement(new Grass(tmp));
+        grassCount++;
 
     }
     public boolean hasGrass(Vector2d position) {
@@ -91,6 +96,7 @@ public class AbstractWorldMap implements IObserver {
         if (hasGrass(position)) {
             ArrayList<AbstractWorldElement> set = elements.get(position);
             set.removeIf(obj -> obj instanceof Grass);
+            grassCount--;
             return true;
         }
         return false;
@@ -117,7 +123,7 @@ public class AbstractWorldMap implements IObserver {
                 father.energy -= BREEDENERGY;
                 mother.breedStatus = false;
                 father.breedStatus = false;
-                this.waitingChildren.add(new Animal(this, 0, 5, 12));
+                this.waitingChildren.add(new Animal(mother, father));
                 break;
             }
         }
@@ -131,8 +137,7 @@ public class AbstractWorldMap implements IObserver {
             System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
             value.move();
         }
-        addGrass();
-        System.out.println("passed grass");
+        for(int i = 0; i < 1; i++) addGrass();
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
         for (Animal animal : animals) this.canBreed(animal);
