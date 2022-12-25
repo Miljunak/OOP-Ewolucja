@@ -28,7 +28,7 @@ abstract public class AbstractGrassRegion {
     }
     public Vector2d getRandomField() {
         Random rand = new Random();
-        if (rand.nextInt(10) < 11 || lowPriority.size() == 0) {
+        if (rand.nextInt(10) < 8 || lowPriority.size() == 0) {
             return highPriority.get(rand.nextInt(highPriority.size()));
         }
         else return lowPriority.get(rand.nextInt(lowPriority.size()));

@@ -27,51 +27,40 @@ public class Animal extends AbstractWorldElement{
         this.breedStatus = true;
         //observers.add(map);
     }
-    public Animal(Animal a, Animal b){
+    public Animal(Animal a, Animal b) {
         this.gIndex = 0;
-        this.birth = a.map.day;//na co wskazuje birth? dzień symulacji???
+        this.birth = a.map.day; //na co wskazuje birth? dzień symulacji??? // tak, to jest dzien symulacji
         this.energy = 2*a.map.energyConstant;
         this.map = a.map;
         this.position = a.position;
         this.direction = ThreadLocalRandom.current().nextInt(0, 8);
-        Random rand = new Random();
-        Animal stronger;
-        Animal weaker;
-        if(a.energy>b.energy){
-            stronger=a;
-            weaker=b;
-        }
-        else{
-            stronger=b;
-            weaker=a;
-        }
-        int side=rand.nextInt(2);
-        float ratio = stronger.energy/(weaker.energy+stronger.energy);
-        if(side==0){
-            int i=0;
-            while(i<a.genotype.size()*ratio){
+        int side = ThreadLocalRandom.current().nextInt(0, 2);
+        Animal stronger = (a.energy > b.energy) ? a : b;
+        Animal weaker = (a.energy > b.energy) ? b : a;
+        double ratio = (double) stronger.energy/(weaker.energy+stronger.energy);
+        if (side == 0) {
+            int i = 0;
+            while (i < a.genotype.size()*ratio) {
                 genotype.add(stronger.genotype.get(i));
                 i++;
             }
-            while(i<a.genotype.size()){
+            while (i < a.genotype.size()) {
                 genotype.add(weaker.genotype.get(i));
                 i++;
             }
         }
-        else{
-            int i=a.genotype.size()-1;
-            while(i>a.genotype.size()-a.genotype.size()*ratio){
+        else {
+            int i = a.genotype.size() - 1;
+            while (i > a.genotype.size() - a.genotype.size()*ratio){
                 genotype.add(stronger.genotype.get(i));
                 i--;
             }
-            while(i>0){
+            while (i > 0) {
                 genotype.add(weaker.genotype.get(i));
                 i--;
             }
-            }
-            //genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
-
-        this.breedStatus = true;
+        }
+        this.breedStatus = false;
     }
     /**
      * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
@@ -97,13 +86,16 @@ public class Animal extends AbstractWorldElement{
         }
         energy--;
         if (map.eatGrass(this.position)) energy += 10;
-        if (energy <= 0) this.death = map.mementoMori(this);
+        if (energy <= 0) {
+            System.out.println(this);
+            this.death = map.mementoMori(this);
+        }
     }
 
     @Override
     public boolean isHealthy() {
         //STALA 15 POZNIEJ BEDZIE JEDNYM Z POTRZEBNYCH INPUTOW
-        return this.energy > 15 && this.breedStatus;
+        return this.energy > 16 && this.breedStatus;
     }
 
     @Override

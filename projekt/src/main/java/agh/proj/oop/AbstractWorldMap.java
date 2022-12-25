@@ -11,20 +11,23 @@ public class AbstractWorldMap implements IObserver {
     public int width;
     public int height;
     public int day = 0;
-    public int energyConstant=4;
+    public int energyConstant = 4;
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
     public AbstractGrassRegion grassRegion;
+    public ArrayList<Animal> waitingChildren;
+    public ArrayList<Animal> deadAnimals;
 
-    public AbstractWorldMap(int width, int height, int grassVariant ) {
+    public AbstractWorldMap(int width, int height, boolean isToxic ) {
         this.width = width;
         this.height = height;
         this.elements = new HashMap<>();
         this.visualizer = new MapVisualizer(this);
         this.animals = new ArrayList<>();
-        if(grassVariant == 1) this.grassRegion = new EquatorGrassRegion(this);
-        else this.grassRegion = new ToxicGrassRegion(this);
+        this.waitingChildren = new ArrayList<>();
+        this.deadAnimals = new ArrayList<>();
+        this.grassRegion = (isToxic) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
         grassRegion.setPriority(0);
     }
 
@@ -45,8 +48,7 @@ public class AbstractWorldMap implements IObserver {
      * @return death_date
      */
     public int mementoMori(Animal animal) {
-        animals.remove(animal);
-        removeElement(animal);
+        deadAnimals.add(animal);
         return day;
     }
 
@@ -111,18 +113,13 @@ public class AbstractWorldMap implements IObserver {
         for (AbstractWorldElement element : currentTile) {
             if (element.isHealthy() && element != father) {
                 mother = (Animal) element;
+                mother.energy -= BREEDENERGY;
+                father.energy -= BREEDENERGY;
+                mother.breedStatus = false;
+                father.breedStatus = false;
+                this.waitingChildren.add(new Animal(this, 0, 5, 12));
                 break;
             }
-        }
-        if (mother != null) {
-            //tutaj bedzie budowanie genotypu ale aktualnie nie mam sily.
-            int fatherGenotype = father.energy / (father.energy + mother.energy);
-            int motherGenotype = mother.energy / (father.energy + mother.energy);
-            mother.energy -= BREEDENERGY;
-            father.energy -= BREEDENERGY;
-            mother.breedStatus = false;
-            father.breedStatus = false;
-            this.giveBirth(new Animal(this, this.day, 30, 7));
         }
     }
     public void nextMove() {
@@ -130,15 +127,21 @@ public class AbstractWorldMap implements IObserver {
             System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
             REMOVELATER = false;
         }
-        for (int i = 0; i < animals.size(); i++) {
-            System.out.println(animals.get(i).genotype.toString() + " " + animals.get(i).direction + " " + animals.get(i).position);
-            animals.get(i).move();
+        for (Animal value : animals) {
+            System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
+            value.move();
         }
         addGrass();
+        System.out.println("passed grass");
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
-        //System.out.println(animals.size());
-        for (int i = 0; i < animals.size(); i++) this.canBreed(animals.get(i));
+        for (Animal animal : animals) this.canBreed(animal);
+        while (deadAnimals.size() > 0) {
+            Animal currAnimal = deadAnimals.remove(0);
+            this.removeElement(currAnimal);
+            animals.remove(currAnimal);
+        }
+        while (waitingChildren.size() > 0) this.giveBirth(waitingChildren.remove(0));
         for (Animal animal : animals) animal.breedStatus = true;
     }
     @Override
