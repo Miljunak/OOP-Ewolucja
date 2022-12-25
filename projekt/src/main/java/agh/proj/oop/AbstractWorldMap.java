@@ -114,11 +114,10 @@ public class AbstractWorldMap implements IObserver {
     }
     public void canBreed(Animal father) {
         ArrayList<AbstractWorldElement> currentTile = objectsAt(father.position);
-        Animal mother = null;
         //Odnajdywanie partnera.
         for (AbstractWorldElement element : currentTile) {
             if (element.isHealthy() && element != father) {
-                mother = (Animal) element;
+                Animal mother = (Animal) element;
                 mother.energy -= BREEDENERGY;
                 father.energy -= BREEDENERGY;
                 mother.breedStatus = false;

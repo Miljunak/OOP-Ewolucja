@@ -55,7 +55,7 @@ public class Animal extends AbstractWorldElement{
                 genotype.add(stronger.genotype.get(i));
                 i--;
             }
-            while (i > 0) {
+            while (i >= 0) {
                 genotype.add(weaker.genotype.get(i));
                 i--;
             }
