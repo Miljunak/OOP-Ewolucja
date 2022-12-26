@@ -17,7 +17,7 @@ public class AbstractWorldMap implements IObserver {
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
     public AbstractGrassRegion grassRegion;
-    public MutationGenerator mutationGenerator= new RandomGenotype();
+    public MutationGenerator mutationGenerator= new SlightGenotype();
     public ArrayList<Animal> waitingChildren;
     public ArrayList<Animal> deadAnimals;
 
