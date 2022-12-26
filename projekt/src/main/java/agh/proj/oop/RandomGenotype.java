@@ -1,4 +1,4 @@
 package agh.proj.oop;
 
-public class RandomGenotype {
+public class RandomGenotype extends MutationGenerator {
 }

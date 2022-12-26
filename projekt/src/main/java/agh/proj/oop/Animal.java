@@ -28,6 +28,7 @@ public class Animal extends AbstractWorldElement{
         //observers.add(map);
     }
     public Animal(Animal a, Animal b) {
+        System.out.println("testetestes");
         this.gIndex = 0;
         this.birth = a.map.day; //na co wskazuje birth? dzień symulacji??? // tak, to jest dzien symulacji
         this.energy = 2*a.map.energyConstant;
@@ -37,8 +38,10 @@ public class Animal extends AbstractWorldElement{
         int side = ThreadLocalRandom.current().nextInt(0, 2);
         Animal stronger = (a.energy > b.energy) ? a : b;
         Animal weaker = (a.energy > b.energy) ? b : a;
-        double ratio = (double) stronger.energy/(weaker.energy+stronger.energy);
+        double ratio = ((double)stronger.energy)/((double)(weaker.energy+stronger.energy));
+        double ratioInv = (double)(weaker.energy)/(double)((weaker.energy+stronger.energy));
         if (side == 0) {
+            System.out.println("sssstestetestes");
             int i = 0;
             while (i < a.genotype.size()*ratio) {
                 genotype.add(stronger.genotype.get(i));
@@ -50,22 +53,26 @@ public class Animal extends AbstractWorldElement{
             }
         }
         else {
-            int i = a.genotype.size() - 1;
-            while (i > a.genotype.size() - a.genotype.size()*ratio){
-                genotype.add(stronger.genotype.get(i));
-                i--;
-            }
-            while (i >= 0) {
+            int i = 0;
+            while (i < a.genotype.size()*ratioInv){
                 genotype.add(weaker.genotype.get(i));
-                i--;
+                i++;
+            }
+            while (i < a.genotype.size()) {
+                genotype.add(stronger.genotype.get(i));
+                i++;
             }
         }
         this.breedStatus = false;
+        this.mutate();
     }
     /**
      * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
      */
+    public void mutate(){
+        map.mutationGenerator.mutate(this);
 
+    }
     public void move() {
         int dir = (direction + genotype.get(gIndex))%8;
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;
@@ -95,7 +102,7 @@ public class Animal extends AbstractWorldElement{
     @Override
     public boolean isHealthy() {
         //STALA 15 POZNIEJ BEDZIE JEDNYM Z POTRZEBNYCH INPUTOW
-        return this.energy > 16 && this.breedStatus;
+        return this.energy > map.BREEDENERGY && this.breedStatus;
     }
 
     @Override

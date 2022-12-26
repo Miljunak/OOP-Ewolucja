@@ -2,6 +2,7 @@ package agh.proj.oop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbstractWorldMap implements IObserver {
@@ -16,6 +17,7 @@ public class AbstractWorldMap implements IObserver {
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
     public AbstractGrassRegion grassRegion;
+    public MutationGenerator mutationGenerator= new RandomGenotype();
     public ArrayList<Animal> waitingChildren;
     public ArrayList<Animal> deadAnimals;
 
@@ -116,13 +118,13 @@ public class AbstractWorldMap implements IObserver {
         ArrayList<AbstractWorldElement> currentTile = objectsAt(father.position);
         //Odnajdywanie partnera.
         for (AbstractWorldElement element : currentTile) {
-            if (element.isHealthy() && element != father) {
+            if (element.isHealthy() && element != father && father.isHealthy()) {
                 Animal mother = (Animal) element;
-                mother.energy -= BREEDENERGY;
-                father.energy -= BREEDENERGY;
                 mother.breedStatus = false;
                 father.breedStatus = false;
                 this.waitingChildren.add(new Animal(mother, father));
+                mother.energy -= BREEDENERGY;
+                father.energy -= BREEDENERGY;
                 break;
             }
         }
