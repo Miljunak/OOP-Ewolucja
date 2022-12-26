@@ -82,7 +82,7 @@ public class AbstractWorldMap implements IObserver {
     }
 
     public void addGrass() {
-        if (grassCount + animals.size() == width * height) return;
+        if (grassCount + animals.size() >= width * height) return;
         Vector2d tmp = grassRegion.getRandomField();
         //Trawia nie rośnie tam, gdzie stoją zwierzęta: feature until proven otherwise
         while (objectsAt(tmp) != null) tmp = grassRegion.getRandomField();
