@@ -17,13 +17,12 @@ public class AbstractWorldMap implements IObserver {
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
     public AbstractGrassRegion grassRegion;
-    public MutationGenerator mutationGenerator= new SlightGenotype();
+    public MutationGenerator mutationGenerator;
     public ArrayList<Animal> waitingChildren;
     public ArrayList<Animal> deadAnimals;
-
     public int grassCount;
 
-    public AbstractWorldMap(int width, int height, boolean isToxic) {
+    public AbstractWorldMap(int width, int height, boolean isToxic, boolean isRandom) {
         this.width = width;
         this.height = height;
         this.elements = new HashMap<>();
@@ -31,6 +30,7 @@ public class AbstractWorldMap implements IObserver {
         this.animals = new ArrayList<>();
         this.waitingChildren = new ArrayList<>();
         this.deadAnimals = new ArrayList<>();
+        this.mutationGenerator = (isRandom) ? new RandomGenotype() : new SlightGenotype();
         this.grassRegion = (isToxic) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
         grassRegion.setPriority(0);
         this.grassCount = 0;

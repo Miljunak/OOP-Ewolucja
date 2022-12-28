@@ -1,7 +1,6 @@
 package agh.proj.oop;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.abs;
@@ -28,7 +27,7 @@ public class Animal extends AbstractWorldElement{
         //observers.add(map);
     }
     public Animal(Animal a, Animal b) {
-        System.out.println("testetestes");
+        //System.out.println("testetestes");
         this.gIndex = 0;
         this.birth = a.map.day; //na co wskazuje birth? dzień symulacji??? // tak, to jest dzien symulacji
         this.energy = 2*a.map.energyConstant;
@@ -40,9 +39,9 @@ public class Animal extends AbstractWorldElement{
         Animal weaker = (a.energy > b.energy) ? b : a;
         double ratio = ((double)stronger.energy)/((double)(weaker.energy+stronger.energy));
         double ratioInv = (double)(weaker.energy)/(double)((weaker.energy+stronger.energy));
+        int i = 0;
         if (side == 0) {
-            System.out.println("sssstestetestes");
-            int i = 0;
+            //System.out.println("sssstestetestes");
             while (i < a.genotype.size()*ratio) {
                 genotype.add(stronger.genotype.get(i));
                 i++;
@@ -53,7 +52,6 @@ public class Animal extends AbstractWorldElement{
             }
         }
         else {
-            int i = 0;
             while (i < a.genotype.size()*ratioInv){
                 genotype.add(weaker.genotype.get(i));
                 i++;
@@ -64,14 +62,7 @@ public class Animal extends AbstractWorldElement{
             }
         }
         this.breedStatus = false;
-        this.mutate();
-    }
-    /**
-     * Function moves animal, also kills the animal if it no longer has sufficient energy to move.
-     */
-    public void mutate(){
         map.mutationGenerator.mutate(this);
-
     }
     public void move() {
         int dir = (direction + genotype.get(gIndex))%8;
@@ -107,10 +98,6 @@ public class Animal extends AbstractWorldElement{
 
     @Override
     public String toString() {
-        //NASTEPUJACA CZESC KODU MUSI ZOSTAC USUNIETA, JEST WYKORZYSTYWANA DO TESTOW
-        if (this.genotype.size() == 10) return "L";
-        else if (this.genotype.size() == 5) return "J";
-        //KONIEC KODU TESTOWEGO
         return "X";
     }
 
