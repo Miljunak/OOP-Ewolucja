@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 public class World {
 
     public static void main(String[] args) {
-
+        Application.launch(App.class, args);
         AbstractWorldMap map = new GlobeMap(12,12, false, false);
 
         SimulationEngine engine = new SimulationEngine(map, 25, 9, 5,
