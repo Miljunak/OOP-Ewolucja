@@ -2,14 +2,13 @@ package agh.proj.oop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AbstractWorldMap implements IObserver {
-
+public class AbstractWorldMap {
     boolean REMOVELATER = true;
-    final int BREEDENERGY = 25;
-    final int energyConstant = 4;
+    public int breedEnergy;
+    public int growingGrass;
+    public int grassEnergy;
     public int width;
     public int height;
     public int day = 0;
@@ -123,8 +122,8 @@ public class AbstractWorldMap implements IObserver {
                 mother.breedStatus = false;
                 father.breedStatus = false;
                 this.waitingChildren.add(new Animal(mother, father));
-                mother.energy -= BREEDENERGY;
-                father.energy -= BREEDENERGY;
+                mother.energy -= breedEnergy;
+                father.energy -= breedEnergy;
                 break;
             }
         }
@@ -138,7 +137,7 @@ public class AbstractWorldMap implements IObserver {
             System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
             value.move();
         }
-        for(int i = 0; i < 1; i++) addGrass();
+        for(int i = 0; i < growingGrass; i++) addGrass();
         System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
         for (Animal animal : animals) this.canBreed(animal);
@@ -149,9 +148,5 @@ public class AbstractWorldMap implements IObserver {
         }
         while (waitingChildren.size() > 0) this.giveBirth(waitingChildren.remove(0));
         for (Animal animal : animals) animal.breedStatus = true;
-    }
-    @Override
-    public void positionChanged(Vector2d oldPos, Vector2d newPos) {
-
     }
 }

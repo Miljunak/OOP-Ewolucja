@@ -30,7 +30,7 @@ public class Animal extends AbstractWorldElement{
         //System.out.println("testetestes");
         this.gIndex = 0;
         this.birth = a.map.day; //na co wskazuje birth? dzień symulacji??? // tak, to jest dzien symulacji
-        this.energy = 2*a.map.energyConstant;
+        this.energy = 2*a.map.breedEnergy;
         this.map = a.map;
         this.position = a.position;
         this.direction = ThreadLocalRandom.current().nextInt(0, 8);
@@ -77,13 +77,13 @@ public class Animal extends AbstractWorldElement{
             map.addElement(this);
         }
         else if (map instanceof PortalMap) {
-            energy -= map.BREEDENERGY;
+            energy -= map.breedEnergy;
             map.removeElement(this);
             this.position = map.getRandom();
             map.addElement(this);
         }
         energy--;
-        if (map.eatGrass(this.position)) energy += 10;
+        if (map.eatGrass(this.position)) energy += map.grassEnergy;
         if (energy <= 0) {
             System.out.println(this);
             this.death = map.mementoMori(this);
@@ -92,8 +92,7 @@ public class Animal extends AbstractWorldElement{
 
     @Override
     public boolean isHealthy() {
-        //STALA 15 POZNIEJ BEDZIE JEDNYM Z POTRZEBNYCH INPUTOW
-        return this.energy > map.BREEDENERGY && this.breedStatus;
+        return this.energy > map.breedEnergy && this.breedStatus;
     }
 
     @Override
