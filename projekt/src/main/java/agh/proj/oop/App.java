@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class App extends Application {
     private static final int TILE_SIZE = 50;
@@ -102,7 +103,7 @@ public class App extends Application {
         // Create a container for the grid and the button
         VBox root = new VBox(10, grid, pauseButton);
 
-        map = new GlobeMap(width, height, grassVar, mutationVar);
+        map = (mapVar == 0) ? new GlobeMap(width, height, grassVar, mutationVar) : new PortalMap(width, height, grassVar, mutationVar);
         engine = new SimulationEngine(map, animalBreedEnergy, grassStart, grassDaily, animalStartEnergy,
                 animalStart, genotypeLength, grassEnergy, mutationMin, mutationMax);
 
@@ -143,8 +144,12 @@ public class App extends Application {
 
     private Color calculateColor(int row, int col) {
         // Calculate and return the color for the tile at the given row and column
-        int res = (map.objectsAt(new Vector2d(col, height - row - 1)) != null) ? 255 : 0;
-        return Color.rgb(res, 0, 0);
+        Vector2d pos = new Vector2d(col, height - row - 1);
+        int highestEnergy = Math.min(map.findStrongest(pos), 100);
+        int green = (highestEnergy == 0) ? 255 : (highestEnergy == -1) ? 69 : 0;
+        int red = (highestEnergy > 0) ? 50 + highestEnergy: 0;
+        int blue = 19;
+        return Color.rgb(red, green, blue);
     }
 
     public static void main(String[] args) {

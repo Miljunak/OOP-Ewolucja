@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbstractWorldMap {
-    boolean REMOVELATER = true;
     public int breedEnergy;
     public int growingGrass;
     public int grassEnergy;
@@ -128,11 +127,18 @@ public class AbstractWorldMap {
             }
         }
     }
-    public void nextMove() {
-        if (REMOVELATER) {
-            System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
-            REMOVELATER = false;
+    public int findStrongest(Vector2d pos){
+        if (objectsAt(pos) == null) return -1;
+        int result = 0;
+        for(int i = 0; i < objectsAt(pos).size(); i++){
+            AbstractWorldElement object = objectsAt(pos).get(i);
+            if (object instanceof Animal) {
+                result = Math.max(result, ((Animal) object).energy);
+            }
         }
+        return result;
+    }
+    public void nextMove() {
         for (Animal value : animals) {
             System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
             value.move();
