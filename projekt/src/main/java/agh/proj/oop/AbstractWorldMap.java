@@ -21,7 +21,7 @@ public class AbstractWorldMap {
     public ArrayList<Animal> deadAnimals;
     public int grassCount;
 
-    public AbstractWorldMap(int width, int height, boolean isToxic, boolean isRandom) {
+    public AbstractWorldMap(int width, int height, int isToxic, int isRandom) {
         this.width = width;
         this.height = height;
         this.elements = new HashMap<>();
@@ -29,8 +29,8 @@ public class AbstractWorldMap {
         this.animals = new ArrayList<>();
         this.waitingChildren = new ArrayList<>();
         this.deadAnimals = new ArrayList<>();
-        this.mutationGenerator = (isRandom) ? new RandomGenotype() : new SlightGenotype();
-        this.grassRegion = (isToxic) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
+        this.mutationGenerator = (isRandom == 1) ? new RandomGenotype() : new SlightGenotype();
+        this.grassRegion = (isToxic == 1) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
         grassRegion.setPriority(0);
         this.grassCount = 0;
     }

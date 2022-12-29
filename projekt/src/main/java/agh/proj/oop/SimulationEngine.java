@@ -16,9 +16,7 @@ public class SimulationEngine {
             this.map.giveBirth(new Animal(this.map, 0, startingEnergy, genotypeLength));
         }
     }
-    void run(int n){
-        for (int i = 0; i < n; i++) {
+    void run() {
             map.nextMove();
-        }
     }
 }
