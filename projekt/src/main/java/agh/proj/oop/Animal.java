@@ -85,7 +85,7 @@ public class Animal extends AbstractWorldElement{
         energy--;
         if (map.eatGrass(this.position)) energy += map.grassEnergy;
         if (energy <= 0) {
-            System.out.println(this);
+            //System.out.println(this);
             this.death = map.mementoMori(this);
         }
     }

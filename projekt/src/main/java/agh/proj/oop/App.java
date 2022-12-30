@@ -1,6 +1,7 @@
 package agh.proj.oop;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -98,17 +99,6 @@ public class App extends Application {
             showGridScene(primaryStage);
         });
 
-        // (Old) Create the setting scene
-        /*Scene settingScene = new Scene(new VBox(5, new Label("Width:"), widthField,
-                new Label("Height: "), heightField, new Label("Map type (1 for portal)"), mapVarField,
-                new Label("Amount of starting grass:"), grassStartField, new Label("Energy from eating grass"),
-                grassEnergyField, new Label("Amount of daily grass"), grassDailyField, new Label("Grass variant (1 for toxic)"),
-                grassVarField, new Label("Amount of starting animals"), animalStartField, new Label("Starting energy for animals"),
-                animalStartEnergyField, new Label("Energy needed to reproduce"), animalBreedEnergyField,
-                new Label("Length of genotype"), genotypeLengthField, new Label("Minimum mutations"),
-                mutationMinField, new Label("Maximum mutations"), mutationMaxField, new Label("Mutation type (1 for random"),
-                mutationVarField, applyButton), 300, 800);*/
-
         // Set the stage properties and show the setting scene
         // Create a container to hold the GridPane and the button
         VBox container = new VBox();
@@ -156,7 +146,6 @@ public class App extends Application {
         // Create a container for the grid and the button
         VBox vBox = new VBox(10, grid, pauseButton);
         // Create a VBox container to hold the parameter labels and text fields
-        //VBox vBox = new VBox();
 
 
 
@@ -164,18 +153,21 @@ public class App extends Application {
         engine = new SimulationEngine(map, animalBreedEnergy, grassStart, grassDaily, animalStartEnergy,
                 animalStart, genotypeLength, grassEnergy, mutationMin, mutationMax);
         // Add some padding to the top of the VBox container
-        vBox.setPadding(new Insets(20, 0, 0, 0));
+        vBox.setPadding(new Insets(20, 20, 0, 0));
 
-        Label dayLabel = new Label("Width: " + map.animals.size());
-        Label heightLabel = new Label("Height: " + height);
-        dayLabel.setText("Day: " +Integer.toString(engine.map.day));
+        Label dayLabel = new Label("Day: " + engine.map.day);
+        Label animalLabel = new Label("Animals: " + engine.map.animals.size());
+        Label grassLabel = new Label("Grass: " + engine.map.grassCount);
+        Label energyLabel = new Label("Average energy: " + 0);
+        Label emptyFilesLabel = new Label("Empty files: " + engine.map.emptyFiles());
+        Label lifeLabel = new Label("Average life: " + "...");
         // Add the labels to the VBox container
-        vBox.getChildren().addAll(dayLabel, heightLabel);
+        vBox.getChildren().addAll(dayLabel, animalLabel, grassLabel, energyLabel, emptyFilesLabel, lifeLabel);
 
 
         // Add the VBox container to the HBox container
         hBox.getChildren().add(vBox);
-        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width, TILE_SIZE * height + 50);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width + 150, TILE_SIZE * height);
 
         // Set the stage properties
         primaryStage.setTitle("The World");
@@ -196,6 +188,15 @@ public class App extends Application {
                 }
 
                 engine.run();
+
+                Platform.runLater(() -> {
+                    dayLabel.setText("Day: " + engine.map.day);
+                    animalLabel.setText("Animals: " + engine.map.animals.size());
+                    grassLabel.setText("Grass: " + engine.map.grassCount);
+                    energyLabel.setText("Average energy: " + Math.round(engine.map.avgEnergy()));
+                    emptyFilesLabel.setText("Empty files: " + engine.map.emptyFiles());
+                    lifeLabel.setText("Average life: " + ((engine.map.avgLife > 0) ? engine.map.avgLife : "..."));
+                });
 
                 for (int row = 0; row < height; row++) {
                     for (int col = 0; col < width; col++) {

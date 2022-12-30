@@ -10,7 +10,9 @@ public class AbstractWorldMap {
     public int grassEnergy;
     public int width;
     public int height;
-    public int day = 0;
+    public int day;
+    public int deathCount;
+    public int avgLife;
     public MapVisualizer visualizer;
     public ArrayList<Animal> animals;
     public HashMap<Vector2d, ArrayList<AbstractWorldElement> > elements;
@@ -32,6 +34,9 @@ public class AbstractWorldMap {
         this.grassRegion = (isToxic == 1) ? new ToxicGrassRegion(this) : new EquatorGrassRegion(this);
         grassRegion.setPriority(0);
         this.grassCount = 0;
+        this.day = 0;
+        this.deathCount = 0;
+        this.avgLife = 0;
     }
 
     public ArrayList<AbstractWorldElement> objectsAt(Vector2d position) {
@@ -51,6 +56,7 @@ public class AbstractWorldMap {
      * @return death_date
      */
     public int mementoMori(Animal animal) {
+        avgLife = ((avgLife*deathCount + day - animal.birth)/++deathCount);
         deadAnimals.add(animal);
         return day;
     }
@@ -138,28 +144,27 @@ public class AbstractWorldMap {
         }
         return result;
     }
-    public Animal findStrongestAnimal(Vector2d pos){
-        if (objectsAt(pos) == null) return null;
-        int result=0;
-        Animal strongest=null;
-        for(int i = 0; i < objectsAt(pos).size(); i++){
-            AbstractWorldElement object = objectsAt(pos).get(i);
-            if (object instanceof Animal) {
-                result = Math.max(result, ((Animal) object).energy);
-                if(result == Math.max(result, ((Animal) object).energy)){
-                    strongest=(Animal)object;
-                }
+    //God forgive me for what I'm about to do.
+    public double avgEnergy() {
+        return animals.stream().mapToDouble(animal -> animal.energy).average().orElse(0.0);
+    }
+
+    public int emptyFiles() {
+        int counter = 0;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (objectsAt(new Vector2d(i, j)) == null) counter++;
             }
         }
-        return strongest;
+        return counter;
     }
     public void nextMove() {
         for (Animal value : animals) {
-            System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
+            //System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
             value.move();
         }
         for(int i = 0; i < growingGrass; i++) addGrass();
-        System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
+        //System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         day++;
         for (Animal animal : animals) this.canBreed(animal);
         while (deadAnimals.size() > 0) {
