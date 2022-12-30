@@ -3,6 +3,7 @@ package agh.proj.oop;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -43,7 +44,38 @@ public class App extends Application {
         TextField mutationMaxField = new TextField();
         TextField mutationVarField = new TextField();
         TextField genotypeLengthField = new TextField();
+        // Create a grid pane to hold the text fields
+        GridPane gridPane = new GridPane();
 
+        // Add the text fields to the grid pane
+        gridPane.add(new Label("Width:"), 0, 0);
+        gridPane.add(widthField, 1, 0);
+        gridPane.add(new Label("Height:"), 0, 1);
+        gridPane.add(heightField, 1, 1);
+        gridPane.add(new Label("Map Variance:"), 0, 2);
+        gridPane.add(mapVarField, 1, 2);
+        gridPane.add(new Label("Grass Start:"), 0, 3);
+        gridPane.add(grassStartField, 1, 3);
+        gridPane.add(new Label("Grass Energy:"), 0, 4);
+        gridPane.add(grassEnergyField, 1, 4);
+        gridPane.add(new Label("Grass Daily:"), 0, 5);
+        gridPane.add(grassDailyField, 1, 5);
+        gridPane.add(new Label("Grass Variance:"), 0, 6);
+        gridPane.add(grassVarField, 1, 6);
+        gridPane.add(new Label("Animal Start:"), 0, 7);
+        gridPane.add(animalStartField, 1, 7);
+        gridPane.add(new Label("Animal Start Energy:"), 0, 8);
+        gridPane.add(animalStartEnergyField, 1, 8);
+        gridPane.add(new Label("Animal Breed Energy:"), 0, 9);
+        gridPane.add(animalBreedEnergyField, 1, 9);
+        gridPane.add(new Label("Genotype Length:"), 0, 10);
+        gridPane.add(genotypeLengthField, 1, 10);
+        gridPane.add(new Label("Mutation Min:"), 0, 11);
+        gridPane.add(mutationMinField, 1, 11);
+        gridPane.add(new Label("Mutation Max:"), 0, 12);
+        gridPane.add(mutationMaxField, 1, 12);
+        gridPane.add(new Label("Mutation Variance:"), 0, 13);
+        gridPane.add(mutationVarField, 1, 13);
         Button applyButton = new Button("Apply");
         applyButton.setOnAction(event -> {
             width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
@@ -63,8 +95,8 @@ public class App extends Application {
             showGridScene(primaryStage);
         });
 
-        // Create the setting scene
-        Scene settingScene = new Scene(new VBox(5, new Label("Width:"), widthField,
+        // (Old) Create the setting scene
+        /*Scene settingScene = new Scene(new VBox(5, new Label("Width:"), widthField,
                 new Label("Height: "), heightField, new Label("Map type (1 for portal)"), mapVarField,
                 new Label("Amount of starting grass:"), grassStartField, new Label("Energy from eating grass"),
                 grassEnergyField, new Label("Amount of daily grass"), grassDailyField, new Label("Grass variant (1 for toxic)"),
@@ -72,11 +104,25 @@ public class App extends Application {
                 animalStartEnergyField, new Label("Energy needed to reproduce"), animalBreedEnergyField,
                 new Label("Length of genotype"), genotypeLengthField, new Label("Minimum mutations"),
                 mutationMinField, new Label("Maximum mutations"), mutationMaxField, new Label("Mutation type (1 for random"),
-                mutationVarField, applyButton), 300, 800);
+                mutationVarField, applyButton), 300, 800);*/
 
         // Set the stage properties and show the setting scene
+        // Create a container to hold the GridPane and the button
+        VBox container = new VBox();
+
+        // Add the GridPane to the container
+        container.getChildren().add(gridPane);
+
+        // Add some space between the GridPane and the button
+        VBox.setMargin(applyButton, new Insets(5, 0, 0, 0));
+
+        // Add the button to the container
+        container.getChildren().add(applyButton);
+
+        // Create a scene to hold the container
+        Scene scene = new Scene(container);
         primaryStage.setTitle("Setting Scene");
-        primaryStage.setScene(settingScene);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
