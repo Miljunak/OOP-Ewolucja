@@ -123,10 +123,11 @@ public class App extends Application {
         // Create the HBox container
         HBox hBox = new HBox();
 
-        if (width > 150 || height > 150) return;
+        if (height > 400 || width > 400) return;
 
-        TILE_SIZE = (width < 15 || height < 15) ? 50 : (width < 30 || height < 30) ? 30 : (width < 45 || height < 45)
-                ? 20 : (width < 80 || height < 80) ? 10 : (width < 120 || height < 120) ? 7 : 5;
+        TILE_SIZE = (height < 20 || width < 20) ? 50 : (height < 40 || width < 40) ? 25 : (height < 65 || width < 65) ? 15 :
+                (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 : (height < 190 || width < 190) ? 5 :
+                        (height < 240 || width < 240) ? 4 : (height < 300 || width < 300) ? 3 : 2;
 
         // Add some padding to the right side of the HBox
         hBox.setPadding(new Insets(0, 0, 0, 20));
@@ -198,16 +199,14 @@ public class App extends Application {
                     energyLabel.setText("Average energy: " + Math.round(engine.map.avgEnergy()));
                     emptyFilesLabel.setText("Empty files: " + engine.map.emptyFiles());
                     lifeLabel.setText("Average life: " + ((engine.map.avgLife > 0) ? engine.map.avgLife : "..."));
-                });
-
-
-                for (int row = 0; row < height; row++) {
-                    for (int col = 0; col < width; col++) {
-                        Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
-                        Color color = calculateColor(row, col); // Calculate the color based on the row and column
-                        tile.setFill(color);
+                    for (int row = 0; row < height; row++) {
+                        for (int col = 0; col < width; col++) {
+                            Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
+                            Color color = calculateColor(row, col);
+                            tile.setFill(color);
+                        }
                     }
-                }
+                });
             }
         });
         thread.setDaemon(true);

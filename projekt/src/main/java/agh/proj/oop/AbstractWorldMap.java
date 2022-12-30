@@ -165,7 +165,7 @@ public class AbstractWorldMap {
         }
         for(int i = 0; i < growingGrass; i++) addGrass();
         //System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
-        day++;
+        this.day++;
         for (Animal animal : animals) this.canBreed(animal);
         while (deadAnimals.size() > 0) {
             Animal currAnimal = deadAnimals.remove(0);
