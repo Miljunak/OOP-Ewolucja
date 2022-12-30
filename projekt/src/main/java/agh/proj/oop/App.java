@@ -1,6 +1,7 @@
 package agh.proj.oop;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -8,7 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -114,7 +117,7 @@ public class App extends Application {
         container.getChildren().add(gridPane);
 
         // Add some space between the GridPane and the button
-        VBox.setMargin(applyButton, new Insets(5, 0, 0, 0));
+        VBox.setMargin(applyButton, new Insets(10, 0, 10, 5));
 
         // Add the button to the container
         container.getChildren().add(applyButton);
@@ -130,7 +133,11 @@ public class App extends Application {
     public void showGridScene(Stage primaryStage) {
         // Create a grid pane to hold the tiles
         GridPane grid = new GridPane();
+        // Create the HBox container
+        HBox hBox = new HBox();
 
+        // Add some padding to the right side of the HBox
+        hBox.setPadding(new Insets(0, 0, 0, 20));
         // Add tiles to the grid
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -147,13 +154,28 @@ public class App extends Application {
         });
 
         // Create a container for the grid and the button
-        VBox root = new VBox(10, grid, pauseButton);
+        VBox vBox = new VBox(10, grid, pauseButton);
+        // Create a VBox container to hold the parameter labels and text fields
+        //VBox vBox = new VBox();
+
+
 
         map = (mapVar == 0) ? new GlobeMap(width, height, grassVar, mutationVar) : new PortalMap(width, height, grassVar, mutationVar);
         engine = new SimulationEngine(map, animalBreedEnergy, grassStart, grassDaily, animalStartEnergy,
                 animalStart, genotypeLength, grassEnergy, mutationMin, mutationMax);
+        // Add some padding to the top of the VBox container
+        vBox.setPadding(new Insets(20, 0, 0, 0));
 
-        Scene scene = new Scene(root, TILE_SIZE * width, TILE_SIZE * height + 50);
+        Label dayLabel = new Label("Width: " + map.animals.size());
+        Label heightLabel = new Label("Height: " + height);
+        dayLabel.setText("Day: " +Integer.toString(engine.map.day));
+        // Add the labels to the VBox container
+        vBox.getChildren().addAll(dayLabel, heightLabel);
+
+
+        // Add the VBox container to the HBox container
+        hBox.getChildren().add(vBox);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width, TILE_SIZE * height + 50);
 
         // Set the stage properties
         primaryStage.setTitle("The World");

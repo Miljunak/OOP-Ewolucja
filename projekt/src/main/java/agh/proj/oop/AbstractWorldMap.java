@@ -138,6 +138,21 @@ public class AbstractWorldMap {
         }
         return result;
     }
+    public Animal findStrongestAnimal(Vector2d pos){
+        if (objectsAt(pos) == null) return null;
+        int result=0;
+        Animal strongest=null;
+        for(int i = 0; i < objectsAt(pos).size(); i++){
+            AbstractWorldElement object = objectsAt(pos).get(i);
+            if (object instanceof Animal) {
+                result = Math.max(result, ((Animal) object).energy);
+                if(result == Math.max(result, ((Animal) object).energy)){
+                    strongest=(Animal)object;
+                }
+            }
+        }
+        return strongest;
+    }
     public void nextMove() {
         for (Animal value : animals) {
             System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
