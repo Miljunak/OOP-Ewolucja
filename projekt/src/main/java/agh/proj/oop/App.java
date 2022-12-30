@@ -2,7 +2,6 @@ package agh.proj.oop;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -19,12 +18,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class App extends Application {
-    private static final int TILE_SIZE = 50;
-    private static final int GRID_SIZE = 10;
+    private int TILE_SIZE;
     private final BooleanProperty paused = new SimpleBooleanProperty(false);
     private SimulationEngine engine;
     private AbstractWorldMap map;
@@ -126,6 +123,11 @@ public class App extends Application {
         // Create the HBox container
         HBox hBox = new HBox();
 
+        if (width > 150 || height > 150) return;
+
+        TILE_SIZE = (width < 15 || height < 15) ? 50 : (width < 30 || height < 30) ? 30 : (width < 45 || height < 45)
+                ? 20 : (width < 80 || height < 80) ? 10 : (width < 120 || height < 120) ? 7 : 5;
+
         // Add some padding to the right side of the HBox
         hBox.setPadding(new Insets(0, 0, 0, 20));
         // Add tiles to the grid
@@ -178,7 +180,7 @@ public class App extends Application {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -197,6 +199,7 @@ public class App extends Application {
                     emptyFilesLabel.setText("Empty files: " + engine.map.emptyFiles());
                     lifeLabel.setText("Average life: " + ((engine.map.avgLife > 0) ? engine.map.avgLife : "..."));
                 });
+
 
                 for (int row = 0; row < height; row++) {
                     for (int col = 0; col < width; col++) {
