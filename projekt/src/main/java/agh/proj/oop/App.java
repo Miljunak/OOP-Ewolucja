@@ -77,7 +77,111 @@ public class App extends Application {
         gridPane.add(mutationMaxField, 1, 12);
         gridPane.add(new Label("Mutation Type (1 for completely random):"), 0, 13);
         gridPane.add(mutationVarField, 1, 13);
-        Button applyButton = new Button("Apply");
+        Button applyButton = new Button("Apply Manual Settings");
+        Button XXLButton = new Button("XXL Map");
+        Button LButton = new Button("Large Map");
+        Button SButton = new Button("Small Map");
+        Button MButton= new Button("Medium Map");
+        Button XSButton= new Button("XS Map");
+        Button XLButton = new Button("XL Map");
+        XSButton.setOnAction(event -> {
+            width = 5;
+            height = 5;
+            mapVar = 0;
+            grassStart = 10;
+            grassEnergy = 10;
+            grassDaily = 5;
+            grassVar = 0;
+            animalStart = 5;
+            animalStartEnergy = 25;
+            animalBreedEnergy = 10;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar =  0;
+            showGridScene(primaryStage);
+        });
+        SButton.setOnAction(event -> {
+            width = 25;
+            height = 25;
+            mapVar = 0;
+            grassStart = 50;
+            grassEnergy = 10;
+            grassDaily = 5;
+            grassVar = 0;
+            animalStart = 15;
+            animalStartEnergy = 50;
+            animalBreedEnergy = 25;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 10;
+            mutationVar =  0;
+            showGridScene(primaryStage);
+        });
+        XXLButton.setOnAction(event -> {
+            width = height = 300;
+            mapVar = 0;
+            grassStart = 150;
+            grassEnergy = 30;
+            grassDaily = 150;
+            grassVar = 0;
+            animalStart = 250;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 50;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        XLButton.setOnAction(event -> {
+            width = height = 200;
+            mapVar = 0;
+            grassStart = 100;
+            grassEnergy = 30;
+            grassDaily = 100;
+            grassVar = 0;
+            animalStart = 200;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 50;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        LButton.setOnAction(event -> {
+            width = height = 100;
+            mapVar = 0;
+            grassStart = 50;
+            grassEnergy = 30;
+            grassDaily = 50;
+            grassVar = 0;
+            animalStart = 100;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 50;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        MButton.setOnAction(event -> {
+            width = height = 50;
+            mapVar = 0;
+            grassStart = 25;
+            grassEnergy = 30;
+            grassDaily = 25;
+            grassVar = 0;
+            animalStart = 50;
+            animalStartEnergy = 50;
+            animalBreedEnergy = 50;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
         applyButton.setOnAction(event -> {
             width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
             height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
@@ -107,7 +211,18 @@ public class App extends Application {
         VBox.setMargin(applyButton, new Insets(10, 0, 10, 5));
 
         // Add the button to the container
-        container.getChildren().add(applyButton);
+        GridPane buttonPane= new GridPane();
+
+        //container.getChildren().add(applyButton);
+        buttonPane.add(applyButton,0,0);
+        buttonPane.add(XSButton, 1,0);
+        buttonPane.add(SButton, 2,0);
+        buttonPane.add(MButton,3,0 );
+        buttonPane.add(LButton,4,0);
+        buttonPane.add(XLButton, 5,0);
+        buttonPane.add(XXLButton, 6,0);
+        container.getChildren().add(buttonPane);
+        buttonPane.setMargin(applyButton, new Insets(0, 10, 0, 0));
 
         // Create a scene to hold the container
         Scene scene = new Scene(container);
