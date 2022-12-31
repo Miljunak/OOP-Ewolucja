@@ -84,6 +84,7 @@ public class App extends Application {
         Button MButton= new Button("Medium Map");
         Button XSButton= new Button("XS Map");
         Button XLButton = new Button("XL Map");
+        Button InsaneButton = new Button("Insane map: ");
         XSButton.setOnAction(event -> {
             width = 5;
             height = 5;
@@ -182,6 +183,22 @@ public class App extends Application {
             mutationVar = 0;
             showGridScene(primaryStage);
         });
+        InsaneButton.setOnAction(event -> {
+            width = height = 50;
+            mapVar = 1;
+            grassStart = 0;
+            grassEnergy = 30;
+            grassDaily = 100;
+            grassVar = 1;
+            animalStart = 200;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 100;
+            genotypeLength = 25;
+            mutationMin = 20;
+            mutationMax = 25;
+            mutationVar = 1;
+            showGridScene(primaryStage);
+        });
         applyButton.setOnAction(event -> {
             width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
             height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
@@ -215,14 +232,15 @@ public class App extends Application {
 
         //container.getChildren().add(applyButton);
         buttonPane.add(applyButton,0,0);
-        buttonPane.add(XSButton, 1,0);
-        buttonPane.add(SButton, 2,0);
-        buttonPane.add(MButton,3,0 );
-        buttonPane.add(LButton,4,0);
-        buttonPane.add(XLButton, 5,0);
-        buttonPane.add(XXLButton, 6,0);
+        buttonPane.add(XSButton, 0,1);
+        buttonPane.add(SButton, 1,1);
+        buttonPane.add(MButton,2,1);
+        buttonPane.add(LButton,3,1);
+        buttonPane.add(XLButton, 4,1);
+        buttonPane.add(XXLButton, 5,1);
+        buttonPane.add(InsaneButton, 0, 2);
         container.getChildren().add(buttonPane);
-        buttonPane.setMargin(applyButton, new Insets(0, 10, 0, 0));
+        GridPane.setMargin(applyButton, new Insets(0, 10, 0, 0));
 
         // Create a scene to hold the container
         Scene scene = new Scene(container);
