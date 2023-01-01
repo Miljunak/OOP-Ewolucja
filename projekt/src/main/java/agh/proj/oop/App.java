@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -77,14 +78,19 @@ public class App extends Application {
         gridPane.add(mutationMaxField, 1, 12);
         gridPane.add(new Label("Mutation Type (1 for completely random):"), 0, 13);
         gridPane.add(mutationVarField, 1, 13);
-        Button applyButton = new Button("Apply Manual Settings");
+        Button applyButton = new Button("Custom");
         Button XXLButton = new Button("XXL Map");
         Button LButton = new Button("Large Map");
         Button SButton = new Button("Small Map");
         Button MButton= new Button("Medium Map");
         Button XSButton= new Button("XS Map");
         Button XLButton = new Button("XL Map");
-        Button InsaneButton = new Button("Insane map: ");
+        Button InsaneButton = new Button("Insanity");
+        Button CrazyButton = new Button("Craziness");
+        Button ClaustrophobiaButton = new Button("Claustrophobia");
+        Button EdenGardenButton = new Button("Eden Garden");
+        Button LongButton = new Button("Long Map");
+        Button ShortGenesButton = new Button("Short Genes");
         XSButton.setOnAction(event -> {
             width = 5;
             height = 5;
@@ -199,6 +205,87 @@ public class App extends Application {
             mutationVar = 1;
             showGridScene(primaryStage);
         });
+        CrazyButton.setOnAction(event -> {
+            width = height = 60;
+            mapVar = 1;
+            grassStart = 30;
+            grassEnergy = 30;
+            grassDaily = 50;
+            grassVar = 1;
+            animalStart = 120;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 150;
+            genotypeLength = 10;
+            mutationMin = 5;
+            mutationMax = 10;
+            mutationVar = 1;
+            showGridScene(primaryStage);
+        });
+        ClaustrophobiaButton.setOnAction(event -> {
+            width = height = 3;
+            mapVar = 0;
+            grassStart = 10;
+            grassEnergy = 30;
+            grassDaily = 10;
+            grassVar = 1;
+            animalStart = 0;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 80;
+            genotypeLength = 10;
+            mutationMin = 0;
+            mutationMax = 10;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        EdenGardenButton.setOnAction(event -> {
+            width = height = 25;
+            mapVar = 0;
+            grassStart = 400;
+            grassEnergy = 50;
+            grassDaily = 2;
+            grassVar = 1;
+            animalStart = 2;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 100;
+            genotypeLength = 150;
+            mutationMin = 0;
+            mutationMax = 10;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        LongButton.setOnAction(event -> {
+            width = 150;
+            height = 65;
+            mapVar = 0;
+            grassStart = 50;
+            grassEnergy = 50;
+            grassDaily = 25;
+            grassVar = 0;
+            animalStart = 50;
+            animalStartEnergy = 100;
+            animalBreedEnergy = 50;
+            genotypeLength = 20;
+            mutationMin = 0;
+            mutationMax = 5;
+            mutationVar = 0;
+            showGridScene(primaryStage);
+        });
+        ShortGenesButton.setOnAction(event -> {
+            width = height = 50;
+            mapVar = 0;
+            grassStart = 20;
+            grassEnergy = 10;
+            grassDaily = 15;
+            grassVar = 1;
+            animalStart = 50;
+            animalStartEnergy = 50;
+            animalBreedEnergy = 50;
+            genotypeLength = 3;
+            mutationMin = 2;
+            mutationMax = 3;
+            mutationVar = 1;
+            showGridScene(primaryStage);
+        });
         applyButton.setOnAction(event -> {
             width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
             height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
@@ -224,11 +311,9 @@ public class App extends Application {
         // Add the GridPane to the container
         container.getChildren().add(gridPane);
 
-        // Add some space between the GridPane and the button
-        VBox.setMargin(applyButton, new Insets(10, 0, 10, 5));
 
         // Add the button to the container
-        GridPane buttonPane= new GridPane();
+        GridPane buttonPane = new GridPane();
 
         //container.getChildren().add(applyButton);
         buttonPane.add(applyButton,0,0);
@@ -239,8 +324,18 @@ public class App extends Application {
         buttonPane.add(XLButton, 4,1);
         buttonPane.add(XXLButton, 5,1);
         buttonPane.add(InsaneButton, 0, 2);
+        buttonPane.add(CrazyButton, 1 ,2);
+        buttonPane.add(ClaustrophobiaButton, 2, 2);
+        buttonPane.add(EdenGardenButton, 3, 2);
+        buttonPane.add(LongButton, 4, 2);
+        buttonPane.add(ShortGenesButton, 5, 2);
         container.getChildren().add(buttonPane);
-        GridPane.setMargin(applyButton, new Insets(0, 10, 0, 0));
+
+        for (Node node : buttonPane.getChildren()) {
+            if (node instanceof Button button) {
+                GridPane.setMargin(button, new Insets(10, 5, 0 ,5));
+            }
+        }
 
         // Create a scene to hold the container
         Scene scene = new Scene(container);
@@ -258,9 +353,11 @@ public class App extends Application {
 
         if (height > 400 || width > 400) return;
 
-        TILE_SIZE = (height < 20 || width < 20) ? 50 : (height < 40 || width < 40) ? 25 : (height < 65 || width < 65) ? 15 :
-                (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 : (height < 190 || width < 190) ? 5 :
-                        (height < 240 || width < 240) ? 4 : (height < 300 || width < 300) ? 3 : 2;
+        TILE_SIZE = (height < 5 || width < 5) ? 75 : (height < 20 || width < 20) ? 50 :
+                (height < 40 || width < 40) ? 25 : (height < 65 || width < 65) ? 15 :
+                        (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 :
+                                (height < 190 || width < 190) ? 5 : (height < 240 || width < 240) ? 4 :
+                                    (height < 300 || width < 300) ? 3 : 2;
 
         // Add some padding to the right side of the HBox
         hBox.setPadding(new Insets(0, 0, 0, 20));
