@@ -1,5 +1,7 @@
 package agh.proj.oop;
 
+import java.util.ArrayList;
+
 public class SimulationEngine {
     public AbstractWorldMap map;
     SimulationEngine(AbstractWorldMap map, int energyConstant, int startingGrass,
@@ -13,7 +15,9 @@ public class SimulationEngine {
         this.map.mutationGenerator.min = minMutations;
         for (int i = 0; i < startingGrass; i++) this.map.addGrass();
         for (int i = 0; i < animalAmount; i++) {
-            this.map.giveBirth(new Animal(this.map, 0, startingEnergy, genotypeLength));
+            ArrayList<Integer> genotypeSet = new ArrayList<Integer>();
+            genotypeSet.add(i);
+            this.map.giveBirth(new Animal(this.map, 0, startingEnergy, genotypeLength, genotypeSet));
         }
     }
     void run() {

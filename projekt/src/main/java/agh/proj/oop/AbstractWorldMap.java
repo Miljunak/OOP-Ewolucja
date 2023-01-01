@@ -1,6 +1,7 @@
 package agh.proj.oop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,6 +22,7 @@ public class AbstractWorldMap {
     public ArrayList<Animal> waitingChildren;
     public ArrayList<Animal> deadAnimals;
     public int grassCount;
+    public ArrayList<Integer> genotypeIndexes;
 
     public AbstractWorldMap(int width, int height, int isToxic, int isRandom) {
         this.width = width;
@@ -37,6 +39,7 @@ public class AbstractWorldMap {
         this.day = 0;
         this.deathCount = 0;
         this.avgLife = 0;
+        this.genotypeIndexes = new ArrayList<>();
     }
 
     public ArrayList<AbstractWorldElement> objectsAt(Vector2d position) {
@@ -47,6 +50,7 @@ public class AbstractWorldMap {
      * Function to create a new animal in map, likely going to be used when breeding is implemented.
      */
     public void giveBirth(Animal animal) {
+        if (day == 0) genotypeIndexes.add(1);
         animals.add(animal);
         addElement(animal);
     }
@@ -158,6 +162,36 @@ public class AbstractWorldMap {
         }
         return counter;
     }
+    public ArrayList<Integer> getHighestValueIndexes() {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        int highestValue = Integer.MIN_VALUE;
+        for (int i = 0; i < genotypeIndexes.size(); i++) {
+            int currentValue = genotypeIndexes.get(i);
+            if (currentValue > highestValue) {
+                highestValue = currentValue;
+                indexes.clear();
+                indexes.add(i);
+            } else if (currentValue == highestValue) {
+                indexes.add(i);
+            }
+        }
+        return indexes;
+    }
+    public boolean hasPopularAnimal(Vector2d pos) {
+        ArrayList<AbstractWorldElement> items = objectsAt(pos);
+        ArrayList<Integer> indexes = getHighestValueIndexes();
+        if (items == null) return false;
+        for (AbstractWorldElement item : items) {
+            if (item instanceof Animal) {
+                for (int i = 0; i < ((Animal) item).genotypeSet.size(); i++) {
+                    for (int element : ((Animal) item).genotypeSet) {
+                        if (indexes.contains(element)) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public void nextMove() {
         for (Animal value : animals) {
             //System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
@@ -169,10 +203,21 @@ public class AbstractWorldMap {
         for (Animal animal : animals) this.canBreed(animal);
         while (deadAnimals.size() > 0) {
             Animal currAnimal = deadAnimals.remove(0);
+            for (int i = 0; i < currAnimal.genotypeSet.size(); i++) {
+                int currIndex = currAnimal.genotypeSet.get(i);
+                genotypeIndexes.set(currIndex, genotypeIndexes.get(currIndex) - 1);
+            }
             this.removeElement(currAnimal);
             animals.remove(currAnimal);
         }
-        while (waitingChildren.size() > 0) this.giveBirth(waitingChildren.remove(0));
+        while (waitingChildren.size() > 0) {
+            Animal currAnimal = waitingChildren.remove(0);
+            for (int i = 0; i < currAnimal.genotypeSet.size(); i++) {
+                int currIndex = currAnimal.genotypeSet.get(i);
+                genotypeIndexes.set(currIndex, genotypeIndexes.get(currIndex) + 1);
+            }
+            this.giveBirth(currAnimal);
+        }
         for (Animal animal : animals) animal.breedStatus = true;
     }
 }

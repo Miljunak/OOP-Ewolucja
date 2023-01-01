@@ -1,13 +1,14 @@
 package agh.proj.oop;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.Math.abs;
 
 public class Animal extends AbstractWorldElement{
     public AbstractWorldMap map;
-
     public int direction;
     public int energy;
     public int birth;
@@ -15,7 +16,8 @@ public class Animal extends AbstractWorldElement{
     private int gIndex;
     public ArrayList<Integer> genotype = new ArrayList<>();
     public boolean breedStatus;
-    public Animal(AbstractWorldMap map, int birth, int energy, int gLength) {
+    public ArrayList<Integer> genotypeSet;
+    public Animal(AbstractWorldMap map, int birth, int energy, int gLength, ArrayList<Integer> genotypeSet) {
         this.gIndex = 0;
         this.birth = birth;
         this.energy = energy;
@@ -24,6 +26,7 @@ public class Animal extends AbstractWorldElement{
         this.direction = ThreadLocalRandom.current().nextInt(0, 8);
         for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
         this.breedStatus = true;
+        this.genotypeSet = genotypeSet;
         //observers.add(map);
     }
     public Animal(Animal a, Animal b) {
@@ -63,7 +66,16 @@ public class Animal extends AbstractWorldElement{
         }
         this.breedStatus = false;
         map.mutationGenerator.mutate(this);
+        this.genotypeSet = mergeArrayLists(a.genotypeSet, b.genotypeSet);
     }
+
+    private static ArrayList<Integer> mergeArrayLists(ArrayList<Integer> list1, ArrayList<Integer> list2) {
+        Set<Integer> set = new HashSet<>();
+        set.addAll(list1);
+        set.addAll(list2);
+        return new ArrayList<>(set);
+    }
+
     public void move() {
         int dir = (direction + genotype.get(gIndex))%8;
         int x = (dir == 0 || dir == 4) ? 0 : (dir < 4) ? 1 : -1;

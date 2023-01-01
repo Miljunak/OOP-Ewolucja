@@ -248,9 +248,9 @@ public class App extends Application {
             showGridScene(primaryStage);
         });
         EdenGardenButton.setOnAction(event -> {
-            width = height = 25;
+            width = height = 20;
             mapVar = 0;
-            grassStart = 400;
+            grassStart = 200;
             grassEnergy = 50;
             grassDaily = 2;
             grassVar = 1;
@@ -407,13 +407,14 @@ public class App extends Application {
         Label energyLabel = new Label("Average energy: " + 0);
         Label emptyFilesLabel = new Label("Empty files: " + engine.map.emptyFiles());
         Label lifeLabel = new Label("Average life: " + "...");
+        Label popularGenotypeLabel = new Label("Popular genotypes: ...");
         // Add the labels to the VBox container
-        vBox.getChildren().addAll(dayLabel, animalLabel, grassLabel, energyLabel, emptyFilesLabel, lifeLabel);
+        vBox.getChildren().addAll(dayLabel, animalLabel, grassLabel, energyLabel, emptyFilesLabel, lifeLabel, popularGenotypeLabel);
 
 
         // Add the VBox container to the HBox container
         hBox.getChildren().add(vBox);
-        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width + 150, TILE_SIZE * height);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width + 200, TILE_SIZE * height);
 
         // Set the stage properties
         primaryStage.setTitle("The World");
@@ -429,7 +430,15 @@ public class App extends Application {
                     e.printStackTrace();
                 }
 
-                if (paused.get()) continue;
+                if (paused.get()) {
+                    for (int row = 0; row < height; row++) {
+                        for (int col = 0; col < width; col++) {
+                            Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
+                            if (isPopular(row, col)) tile.setFill(Color.rgb(200, 0, 255));
+                        }
+                    }
+                    continue;
+                }
 
                 engine.run();
 
@@ -440,6 +449,8 @@ public class App extends Application {
                     energyLabel.setText("Average energy: " + Math.round(engine.map.avgEnergy()));
                     emptyFilesLabel.setText("Empty files: " + engine.map.emptyFiles());
                     lifeLabel.setText("Average life: " + ((engine.map.avgLife > 0) ? engine.map.avgLife : "..."));
+                    ArrayList<Integer> indexes = engine.map.getHighestValueIndexes();
+                    popularGenotypeLabel.setText("Popular genotypes: " + ((indexes.size() < 4) ? indexes : "too long..."));
 
                     if (saveData) {
                         try {
@@ -471,6 +482,10 @@ public class App extends Application {
         int red = (highestEnergy > 0) ? 50 + highestEnergy: 0;
         int blue = 19;
         return Color.rgb(red, green, blue);
+    }
+    private boolean isPopular(int row, int col) {
+        Vector2d pos = new Vector2d(col, height - row - 1);
+        return engine.map.hasPopularAnimal(pos);
     }
     private void saveData() throws IOException {
         String csvFile = fileName + ".csv";
