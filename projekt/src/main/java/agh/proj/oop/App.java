@@ -18,16 +18,23 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import java.io.FileWriter;
+import com.opencsv.CSVWriter;
 
 public class App extends Application {
-    private int TILE_SIZE;
     private final BooleanProperty paused = new SimpleBooleanProperty(false);
     private SimulationEngine engine;
     private AbstractWorldMap map;
     private int width, height, mapVar, grassStart, grassEnergy, grassDaily, grassVar, animalStart, animalStartEnergy;
     private int animalBreedEnergy, mutationMin, mutationMax, genotypeLength, mutationVar;
+    private boolean saveData = false;
+
+    private String fileName;
 
     @Override
     public void start(Stage primaryStage) {
@@ -46,6 +53,8 @@ public class App extends Application {
         TextField mutationMaxField = new TextField();
         TextField mutationVarField = new TextField();
         TextField genotypeLengthField = new TextField();
+        TextField fileNameField = new TextField("data");
+        fileNameField.setPrefWidth(50);
         // Create a grid pane to hold the text fields
         GridPane gridPane = new GridPane();
 
@@ -91,6 +100,7 @@ public class App extends Application {
         Button EdenGardenButton = new Button("Eden Garden");
         Button LongButton = new Button("Long Map");
         Button ShortGenesButton = new Button("Short Genes");
+        Button SaveButton = new Button("Save Data");
         XSButton.setOnAction(event -> {
             width = 5;
             height = 5;
@@ -228,7 +238,7 @@ public class App extends Application {
             grassEnergy = 30;
             grassDaily = 10;
             grassVar = 1;
-            animalStart = 0;
+            animalStart = 50;
             animalStartEnergy = 100;
             animalBreedEnergy = 80;
             genotypeLength = 10;
@@ -286,6 +296,10 @@ public class App extends Application {
             mutationVar = 1;
             showGridScene(primaryStage);
         });
+        SaveButton.setOnAction(event -> {
+            saveData = !saveData;
+            fileName = fileNameField.getText();
+        });
         applyButton.setOnAction(event -> {
             width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
             height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
@@ -311,12 +325,13 @@ public class App extends Application {
         // Add the GridPane to the container
         container.getChildren().add(gridPane);
 
-
         // Add the button to the container
         GridPane buttonPane = new GridPane();
 
         //container.getChildren().add(applyButton);
         buttonPane.add(applyButton,0,0);
+        buttonPane.add(SaveButton, 1, 0);
+        buttonPane.add(fileNameField, 2, 0);
         buttonPane.add(XSButton, 0,1);
         buttonPane.add(SButton, 1,1);
         buttonPane.add(MButton,2,1);
@@ -332,9 +347,7 @@ public class App extends Application {
         container.getChildren().add(buttonPane);
 
         for (Node node : buttonPane.getChildren()) {
-            if (node instanceof Button button) {
-                GridPane.setMargin(button, new Insets(10, 5, 0 ,5));
-            }
+            GridPane.setMargin(node, new Insets(10, 5, 1 ,5));
         }
 
         // Create a scene to hold the container
@@ -353,11 +366,11 @@ public class App extends Application {
 
         if (height > 400 || width > 400) return;
 
-        TILE_SIZE = (height < 5 || width < 5) ? 75 : (height < 20 || width < 20) ? 50 :
+        int TILE_SIZE = (height < 5 || width < 5) ? 75 : (height < 20 || width < 20) ? 50 :
                 (height < 40 || width < 40) ? 25 : (height < 65 || width < 65) ? 15 :
                         (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 :
                                 (height < 190 || width < 190) ? 5 : (height < 240 || width < 240) ? 4 :
-                                    (height < 300 || width < 300) ? 3 : 2;
+                                        (height < 300 || width < 300) ? 3 : 2;
 
         // Add some padding to the right side of the HBox
         hBox.setPadding(new Insets(0, 0, 0, 20));
@@ -416,9 +429,7 @@ public class App extends Application {
                     e.printStackTrace();
                 }
 
-                if (paused.get()) {
-                    continue;
-                }
+                if (paused.get()) continue;
 
                 engine.run();
 
@@ -429,6 +440,15 @@ public class App extends Application {
                     energyLabel.setText("Average energy: " + Math.round(engine.map.avgEnergy()));
                     emptyFilesLabel.setText("Empty files: " + engine.map.emptyFiles());
                     lifeLabel.setText("Average life: " + ((engine.map.avgLife > 0) ? engine.map.avgLife : "..."));
+
+                    if (saveData) {
+                        try {
+                            saveData();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
                     for (int row = 0; row < height; row++) {
                         for (int col = 0; col < width; col++) {
                             Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
@@ -451,6 +471,25 @@ public class App extends Application {
         int red = (highestEnergy > 0) ? 50 + highestEnergy: 0;
         int blue = 19;
         return Color.rgb(red, green, blue);
+    }
+    private void saveData() throws IOException {
+        String csvFile = fileName + ".csv";
+        FileWriter writer = new FileWriter(csvFile, true); // Open the file in append mode
+        CSVWriter csvWriter = new CSVWriter(writer);
+        List<String[]> data = new ArrayList<>();
+        if (engine.map.day == 1) data.add(new String[] {
+                "Day: ", "Animal Count: ", "Grass Count: ", "Avg Energy: ", "Empty Tiles: ", "Avg Life:"
+        });
+        data.add(new String[] {
+                Integer.toString(engine.map.day),
+                Integer.toString(engine.map.animals.size()),
+                Integer.toString(engine.map.grassCount),
+                Integer.toString((int) Math.round(engine.map.avgEnergy())),
+                Integer.toString(engine.map.emptyFiles()),
+                (engine.map.avgLife > 0) ? Integer.toString(engine.map.avgLife) : "..."
+        });
+        csvWriter.writeAll(data);
+        csvWriter.close();
     }
 
     public static void main(String[] args) {
