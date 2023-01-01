@@ -38,7 +38,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Create a button to apply the settings and show the grid scene
         TextField widthField = new TextField();
         TextField heightField = new TextField();
         TextField mapVarField = new TextField();
@@ -55,7 +54,7 @@ public class App extends Application {
         TextField genotypeLengthField = new TextField();
         TextField fileNameField = new TextField("data");
         fileNameField.setPrefWidth(50);
-        // Create a grid pane to hold the text fields
+
         GridPane gridPane = new GridPane();
 
         // Add the text fields to the grid pane
@@ -318,17 +317,12 @@ public class App extends Application {
             showGridScene(primaryStage);
         });
 
-        // Set the stage properties and show the setting scene
-        // Create a container to hold the GridPane and the button
         VBox container = new VBox();
 
-        // Add the GridPane to the container
         container.getChildren().add(gridPane);
 
-        // Add the button to the container
         GridPane buttonPane = new GridPane();
 
-        //container.getChildren().add(applyButton);
         buttonPane.add(applyButton,0,0);
         buttonPane.add(SaveButton, 1, 0);
         buttonPane.add(fileNameField, 2, 0);
@@ -350,7 +344,6 @@ public class App extends Application {
             GridPane.setMargin(node, new Insets(10, 5, 1 ,5));
         }
 
-        // Create a scene to hold the container
         Scene scene = new Scene(container);
         primaryStage.setTitle("Setting Scene");
         primaryStage.setScene(scene);
@@ -359,9 +352,7 @@ public class App extends Application {
 
 
     public void showGridScene(Stage primaryStage) {
-        // Create a grid pane to hold the tiles
         GridPane grid = new GridPane();
-        // Create the HBox container
         HBox hBox = new HBox();
 
         if (height > 400 || width > 400) return;
@@ -372,9 +363,7 @@ public class App extends Application {
                                 (height < 190 || width < 190) ? 5 : (height < 240 || width < 240) ? 4 :
                                         (height < 300 || width < 300) ? 3 : 2;
 
-        // Add some padding to the right side of the HBox
         hBox.setPadding(new Insets(0, 0, 0, 20));
-        // Add tiles to the grid
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 Rectangle tile = new Rectangle(TILE_SIZE, TILE_SIZE);
@@ -382,7 +371,6 @@ public class App extends Application {
             }
         }
 
-        // Create a button to pause the process
         Button pauseButton = new Button("Pause");
         pauseButton.setOnAction(event -> {
             pauseButton.setText(!paused.get() ? "Start" : "Pause");
@@ -391,14 +379,13 @@ public class App extends Application {
 
         // Create a container for the grid and the button
         VBox vBox = new VBox(10, grid, pauseButton);
-        // Create a VBox container to hold the parameter labels and text fields
 
 
 
         map = (mapVar == 0) ? new GlobeMap(width, height, grassVar, mutationVar) : new PortalMap(width, height, grassVar, mutationVar);
         engine = new SimulationEngine(map, animalBreedEnergy, grassStart, grassDaily, animalStartEnergy,
                 animalStart, genotypeLength, grassEnergy, mutationMin, mutationMax);
-        // Add some padding to the top of the VBox container
+
         vBox.setPadding(new Insets(20, 20, 0, 0));
 
         Label dayLabel = new Label("Day: " + engine.map.day);
@@ -408,20 +395,17 @@ public class App extends Application {
         Label emptyFilesLabel = new Label("Empty files: " + engine.map.emptyFiles());
         Label lifeLabel = new Label("Average life: " + "...");
         Label popularGenotypeLabel = new Label("Popular genotypes: ...");
-        // Add the labels to the VBox container
         vBox.getChildren().addAll(dayLabel, animalLabel, grassLabel, energyLabel, emptyFilesLabel, lifeLabel, popularGenotypeLabel);
 
 
-        // Add the VBox container to the HBox container
         hBox.getChildren().add(vBox);
         Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width + 200, TILE_SIZE * height);
 
-        // Set the stage properties
         primaryStage.setTitle("The World");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Calculate and update the grid every second
+        // Calculate and update the grid every 100ms
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
@@ -475,7 +459,6 @@ public class App extends Application {
     }
 
     private Color calculateColor(int row, int col) {
-        // Calculate and return the color for the tile at the given row and column
         Vector2d pos = new Vector2d(col, height - row - 1);
         int highestEnergy = Math.min(map.findStrongest(pos), 100);
         int green = (highestEnergy == 0) ? 255 : (highestEnergy == -1) ? 69 : 0;

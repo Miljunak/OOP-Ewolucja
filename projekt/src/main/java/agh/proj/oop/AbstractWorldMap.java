@@ -55,10 +55,6 @@ public class AbstractWorldMap {
         addElement(animal);
     }
 
-    /**
-     * Function to kill and remove an animal from the simulation.
-     * @return death_date
-     */
     public int mementoMori(Animal animal) {
         avgLife = ((avgLife*deathCount + day - animal.birth)/++deathCount);
         deadAnimals.add(animal);
@@ -193,10 +189,7 @@ public class AbstractWorldMap {
         return false;
     }
     public void nextMove() {
-        for (Animal value : animals) {
-            //System.out.println(value.genotype.toString() + " " + value.direction + " " + value.position);
-            value.move();
-        }
+        for (Animal value : animals) value.move();
         for(int i = 0; i < growingGrass; i++) addGrass();
         //System.out.println(visualizer.draw(new Vector2d(0,0), new Vector2d(width - 1 , height - 1)));
         this.day++;

@@ -27,10 +27,8 @@ public class Animal extends AbstractWorldElement{
         for (int i = 0; i < gLength; i++) genotype.add(ThreadLocalRandom.current().nextInt(0, 8));
         this.breedStatus = true;
         this.genotypeSet = genotypeSet;
-        //observers.add(map);
     }
     public Animal(Animal a, Animal b) {
-        //System.out.println("testetestes");
         this.gIndex = 0;
         this.birth = a.map.day; //na co wskazuje birth? dzień symulacji??? // tak, to jest dzien symulacji
         this.energy = 2*a.map.breedEnergy;
