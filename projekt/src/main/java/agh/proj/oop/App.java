@@ -399,21 +399,21 @@ public class App extends Application {
         Label lifeLabel = new Label("Average life: " + "...");
         Label popularGenotypeLabel = new Label("Popular genotypes: ...");
         vBox.getChildren().addAll(dayLabel, animalLabel, grassLabel, energyLabel, emptyFilesLabel, lifeLabel, popularGenotypeLabel);
-
-
+        Label animalDeath= new Label("Date of death: not dead ");
+        animalStatsBox.getChildren().add(new Label(""));
+        animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+        animalStatsBox.getChildren().add(new Label("Currently not tracking"));
         hBox.getChildren().add(vBox);
-        Scene scene = new Scene(new BorderPane(grid, null, hBox, null, null), TILE_SIZE * width + 200, TILE_SIZE * height);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, animalStatsBox, null), TILE_SIZE * width + 200, TILE_SIZE * height+200);
 
         primaryStage.setTitle("The World");
         primaryStage.setScene(scene);
         primaryStage.show();
         // Create a container for the animal statistics
         //VBox animalStatsBox = new VBox();
-        animalStatsBox.getChildren().add(new Label(""));
-        animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
-        animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+
         // Add the animal stats container to the right side of the grid
-        hBox.getChildren().add(animalStatsBox);
+        //hBox.getChildren().add(animalStatsBox);
         // Calculate and update the grid every 100ms
         Thread thread = new Thread(() -> {
             while (true) {
@@ -448,6 +448,10 @@ public class App extends Application {
                                     animalStatsBox.getChildren().add(new Label(""));
                                     animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
                                     animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+                                    animalStatsBox.getChildren().add(new Label(""));
+                                    animalStatsBox.getChildren().add(new Label(""));
+                                    animalStatsBox.getChildren().add(new Label(""));
+                                    animalStatsBox.getChildren().add(new Label(""));
                                     tracking=false;
                                     tracked=null;
                                     return;
@@ -462,6 +466,10 @@ public class App extends Application {
                                     animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
                                     animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
                                     animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
+                                    animalStatsBox.getChildren().add(new Label("Number of children " + tracked.numberOfChildren));
+                                    animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
+                                    animalDeath.setText("Day of death: not dead");
+                                    animalStatsBox.getChildren().add(animalDeath);
                                     //  animalStatsBox.getChildren().add(new Label("Age: " + animal.birth));
                                     // animalStatsBox.getChildren().add(new Label("Genotype: " + animal.genotype.toString()));
                                 }
@@ -510,8 +518,12 @@ public class App extends Application {
                         animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
                         // Add the new animal stats
                         animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
-                        animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
+                        animalStatsBox.getChildren().add(new Label("Grass eaten: " + tracked.munched));
                         animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
+                        animalStatsBox.getChildren().add(new Label("Number of children " + tracked.numberOfChildren));
+                        animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
+                        animalStatsBox.getChildren().add(animalDeath);
+                        if(tracked.death!=-1) animalDeath.setText("Day of death: " + tracked.death);
 
                     }
                     else{
@@ -519,6 +531,10 @@ public class App extends Application {
                         animalStatsBox.getChildren().add(new Label(""));
                         animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
                         animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+                        animalStatsBox.getChildren().add(new Label(""));
+                        animalStatsBox.getChildren().add(new Label(""));
+                        animalStatsBox.getChildren().add(new Label(""));
+                        animalStatsBox.getChildren().add(new Label(""));
                     }
 
                 });

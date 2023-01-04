@@ -12,11 +12,14 @@ public class Animal extends AbstractWorldElement{
     public int direction;
     public int energy;
     public int birth;
-    public int death;
+    public int death=-1;
     private int gIndex;
     public ArrayList<Integer> genotype = new ArrayList<>();
     public boolean breedStatus;
     public ArrayList<Integer> genotypeSet;
+
+    public int numberOfChildren=0;
+    public int munched=0;
     public Animal(AbstractWorldMap map, int birth, int energy, int gLength, ArrayList<Integer> genotypeSet) {
         this.gIndex = 0;
         this.birth = birth;
@@ -93,7 +96,10 @@ public class Animal extends AbstractWorldElement{
             map.addElement(this);
         }
         energy--;
-        if (map.eatGrass(this.position)) energy = Math.min(energy + map.grassEnergy, 300);
+        if (map.eatGrass(this.position)){
+            energy = Math.min(energy + map.grassEnergy, 300);
+            munched++;
+        }
         if (energy <= 0) {
             //System.out.println(this);
             this.death = map.mementoMori(this);

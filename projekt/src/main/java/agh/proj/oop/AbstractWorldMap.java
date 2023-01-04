@@ -129,6 +129,8 @@ public class AbstractWorldMap {
                 this.waitingChildren.add(new Animal(mother, father));
                 mother.energy -= breedEnergy;
                 father.energy -= breedEnergy;
+                mother.numberOfChildren++;
+                father.numberOfChildren++;
                 break;
             }
         }
