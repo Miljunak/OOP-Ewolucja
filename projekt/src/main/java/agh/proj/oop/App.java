@@ -33,6 +33,8 @@ public class App extends Application {
     private int width, height, mapVar, grassStart, grassEnergy, grassDaily, grassVar, animalStart, animalStartEnergy;
     private int animalBreedEnergy, mutationMin, mutationMax, genotypeLength, mutationVar;
     private boolean saveData = false;
+    private boolean tracking = false;
+    private Animal tracked = null;
 
     private String fileName;
 
@@ -352,9 +354,10 @@ public class App extends Application {
 
 
     public void showGridScene(Stage primaryStage) {
-        GridPane grid = new GridPane();
-        HBox hBox = new HBox();
 
+        GridPane grid = new GridPane();
+        VBox hBox = new VBox();
+        VBox animalStatsBox = new VBox();
         if (height > 400 || width > 400) return;
 
         int TILE_SIZE = (height < 5 || width < 5) ? 75 : (height < 20 || width < 20) ? 50 :
@@ -404,7 +407,13 @@ public class App extends Application {
         primaryStage.setTitle("The World");
         primaryStage.setScene(scene);
         primaryStage.show();
-
+        // Create a container for the animal statistics
+        //VBox animalStatsBox = new VBox();
+        animalStatsBox.getChildren().add(new Label(""));
+        animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+        animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+        // Add the animal stats container to the right side of the grid
+        hBox.getChildren().add(animalStatsBox);
         // Calculate and update the grid every 100ms
         Thread thread = new Thread(() -> {
             while (true) {
@@ -421,12 +430,54 @@ public class App extends Application {
                             if (isPopular(row, col)) tile.setFill(Color.rgb(200, 0, 255));
                         }
                     }
+                    //tracking
+                    for (int row = 0; row < height; row++) {
+                        for (int col = 0; col < width; col++) {
+                            Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
+
+                            Integer x=col;
+                            Integer y=row;
+                            Vector2d here=new Vector2d(x, height-y-1);
+                            tile.setOnMouseClicked(event -> {
+
+                                //Animal animal = map.findStrongestAnimal(here);
+                                //int strongest=engine.map.findStrongest(here);
+                                tracked=map.findStrongestAnimal(here);
+                                if (tracked == null) {
+                                    animalStatsBox.getChildren().clear();
+                                    animalStatsBox.getChildren().add(new Label(""));
+                                    animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+                                    animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+                                    tracking=false;
+                                    tracked=null;
+                                    return;
+                                }
+                                else{
+                                    tracking=true;
+                                    // Clear the previous animal stats
+                                    animalStatsBox.getChildren().clear();
+                                    animalStatsBox.getChildren().add(new Label(""));
+                                    animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+                                    // Add the new animal stats
+                                    animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
+                                    animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
+                                    animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
+                                    //  animalStatsBox.getChildren().add(new Label("Age: " + animal.birth));
+                                    // animalStatsBox.getChildren().add(new Label("Genotype: " + animal.genotype.toString()));
+                                }
+
+
+                            });
+                        }
+                    }
                     continue;
                 }
 
-                engine.run();
+
+
 
                 Platform.runLater(() -> {
+
                     dayLabel.setText("Day: " + engine.map.day);
                     animalLabel.setText("Animals: " + engine.map.animals.size());
                     grassLabel.setText("Grass: " + engine.map.grassCount);
@@ -451,11 +502,32 @@ public class App extends Application {
                             tile.setFill(color);
                         }
                     }
+                    if(tracking){
+                        // Clear the previous animal stats
+                        // Clear the previous animal stats
+                        animalStatsBox.getChildren().clear();
+                        animalStatsBox.getChildren().add(new Label(""));
+                        animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+                        // Add the new animal stats
+                        animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
+                        animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
+                        animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
+
+                    }
+                    else{
+                        animalStatsBox.getChildren().clear();
+                        animalStatsBox.getChildren().add(new Label(""));
+                        animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
+                        animalStatsBox.getChildren().add(new Label("Currently not tracking"));
+                    }
+
                 });
+                engine.run();
             }
         });
         thread.setDaemon(true);
         thread.start();
+
     }
 
     private Color calculateColor(int row, int col) {

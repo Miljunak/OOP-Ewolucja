@@ -43,7 +43,7 @@ public class AbstractWorldMap {
     }
 
     public ArrayList<AbstractWorldElement> objectsAt(Vector2d position) {
-        return elements.getOrDefault(position, null);
+        return elements.get(position);
     }
 
     /**
@@ -136,13 +136,30 @@ public class AbstractWorldMap {
     public int findStrongest(Vector2d pos){
         if (objectsAt(pos) == null) return -1;
         int result = 0;
-        for(int i = 0; i < objectsAt(pos).size(); i++){
-            AbstractWorldElement object = objectsAt(pos).get(i);
+        for(int i = 0; i < elements.get(pos).size(); i++){
+            AbstractWorldElement object = elements.get(pos).get(i);
             if (object instanceof Animal) {
                 result = Math.max(result, ((Animal) object).energy);
             }
         }
         return result;
+    }
+    public Animal findStrongestAnimal(Vector2d pos){
+        if (objectsAt(pos) == null){
+            //System.out.println("testetstest");
+            return null;
+        }
+        int result = -1;
+        Animal strongest=null;
+        for(int i = 0; i < objectsAt(pos).size(); i++){
+            AbstractWorldElement object = objectsAt(pos).get(i);
+            if (object instanceof Animal) {
+                int temp=result;
+                result = Math.max(result, ((Animal) object).energy);
+                if(result !=temp) strongest=(Animal) object;
+            }
+        }
+        return strongest;
     }
     //God forgive me for what I'm about to do.
     public double avgEnergy() {
