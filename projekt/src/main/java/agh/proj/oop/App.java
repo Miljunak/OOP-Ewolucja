@@ -59,7 +59,6 @@ public class App extends Application {
 
         GridPane gridPane = new GridPane();
 
-        // Add the text fields to the grid pane
         gridPane.add(new Label("Width:"), 0, 0);
         gridPane.add(widthField, 1, 0);
         gridPane.add(new Label("Height:"), 0, 1);
@@ -365,7 +364,7 @@ public class App extends Application {
                         (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 :
                                 (height < 190 || width < 190) ? 5 : (height < 240 || width < 240) ? 4 :
                                         (height < 300 || width < 300) ? 3 : 2;
-
+        TILE_SIZE=TILE_SIZE/2;
         hBox.setPadding(new Insets(0, 0, 0, 20));
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -379,8 +378,6 @@ public class App extends Application {
             pauseButton.setText(!paused.get() ? "Start" : "Pause");
             paused.set(!paused.get());
         });
-
-        // Create a container for the grid and the button
         VBox vBox = new VBox(10, grid, pauseButton);
 
 
@@ -404,17 +401,11 @@ public class App extends Application {
         animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
         animalStatsBox.getChildren().add(new Label("Currently not tracking"));
         hBox.getChildren().add(vBox);
-        Scene scene = new Scene(new BorderPane(grid, null, hBox, animalStatsBox, null), TILE_SIZE * width + 200, TILE_SIZE * height+200);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, animalStatsBox, null), TILE_SIZE * width + 200, TILE_SIZE * height+260);
 
         primaryStage.setTitle("The World");
         primaryStage.setScene(scene);
         primaryStage.show();
-        // Create a container for the animal statistics
-        //VBox animalStatsBox = new VBox();
-
-        // Add the animal stats container to the right side of the grid
-        //hBox.getChildren().add(animalStatsBox);
-        // Calculate and update the grid every 100ms
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
@@ -440,8 +431,6 @@ public class App extends Application {
                             Vector2d here=new Vector2d(x, height-y-1);
                             tile.setOnMouseClicked(event -> {
 
-                                //Animal animal = map.findStrongestAnimal(here);
-                                //int strongest=engine.map.findStrongest(here);
                                 tracked=map.findStrongestAnimal(here);
                                 if (tracked == null) {
                                     animalStatsBox.getChildren().clear();
@@ -454,15 +443,12 @@ public class App extends Application {
                                     animalStatsBox.getChildren().add(new Label(""));
                                     tracking=false;
                                     tracked=null;
-                                    return;
                                 }
                                 else{
                                     tracking=true;
-                                    // Clear the previous animal stats
                                     animalStatsBox.getChildren().clear();
                                     animalStatsBox.getChildren().add(new Label(""));
                                     animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
-                                    // Add the new animal stats
                                     animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
                                     animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
                                     animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
@@ -470,8 +456,6 @@ public class App extends Application {
                                     animalStatsBox.getChildren().add(new Label("Day of birth: " + tracked.birth));
                                     animalDeath.setText("Day of death: not dead");
                                     animalStatsBox.getChildren().add(animalDeath);
-                                    //  animalStatsBox.getChildren().add(new Label("Age: " + animal.birth));
-                                    // animalStatsBox.getChildren().add(new Label("Genotype: " + animal.genotype.toString()));
                                 }
 
 
@@ -511,12 +495,9 @@ public class App extends Application {
                         }
                     }
                     if(tracking){
-                        // Clear the previous animal stats
-                        // Clear the previous animal stats
                         animalStatsBox.getChildren().clear();
                         animalStatsBox.getChildren().add(new Label(""));
                         animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
-                        // Add the new animal stats
                         animalStatsBox.getChildren().add(new Label("Energy: " + tracked.energy));
                         animalStatsBox.getChildren().add(new Label("Grass eaten: " + tracked.munched));
                         animalStatsBox.getChildren().add(new Label("Genotype " + tracked.genotype));
