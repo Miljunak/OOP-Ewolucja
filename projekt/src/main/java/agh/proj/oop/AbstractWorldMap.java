@@ -46,9 +46,6 @@ public class AbstractWorldMap {
         return elements.get(position);
     }
 
-    /**
-     * Function to create a new animal in map, likely going to be used when breeding is implemented.
-     */
     public void giveBirth(Animal animal) {
         if (day == 0) genotypeIndexes.add(1);
         animals.add(animal);
