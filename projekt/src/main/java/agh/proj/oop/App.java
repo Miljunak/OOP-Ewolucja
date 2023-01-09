@@ -28,6 +28,7 @@ import com.opencsv.CSVWriter;
 
 public class App extends Application {
     private final BooleanProperty paused = new SimpleBooleanProperty(false);
+    private final BooleanProperty showPopular = new SimpleBooleanProperty(false);
     private SimulationEngine engine;
     private AbstractWorldMap map;
     private int width, height, mapVar, grassStart, grassEnergy, grassDaily, grassVar, animalStart, animalStartEnergy;
@@ -35,7 +36,6 @@ public class App extends Application {
     private boolean saveData = false;
     private boolean tracking = false;
     private Animal tracked = null;
-
     private String fileName;
 
     @Override
@@ -364,7 +364,7 @@ public class App extends Application {
                         (height < 90 || width < 90) ? 10 : (height < 140 || width < 140) ? 7 :
                                 (height < 190 || width < 190) ? 5 : (height < 240 || width < 240) ? 4 :
                                         (height < 300 || width < 300) ? 3 : 2;
-        TILE_SIZE=TILE_SIZE/2;
+        //TILE_SIZE=TILE_SIZE/2;
         hBox.setPadding(new Insets(0, 0, 0, 20));
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -372,13 +372,16 @@ public class App extends Application {
                 grid.add(tile, col, row);
             }
         }
-
+        Button popularGenotypeButton = new Button("Popular\nGenotype");
+        popularGenotypeButton.setVisible(false);
         Button pauseButton = new Button("Pause");
         pauseButton.setOnAction(event -> {
             pauseButton.setText(!paused.get() ? "Start" : "Pause");
+            popularGenotypeButton.setVisible(!paused.get());
             paused.set(!paused.get());
         });
-        VBox vBox = new VBox(10, grid, pauseButton);
+        popularGenotypeButton.setOnAction(event -> showPopular.set(!showPopular.get()));
+        VBox vBox = new VBox(10, grid, pauseButton, popularGenotypeButton);
 
 
 
@@ -401,7 +404,7 @@ public class App extends Application {
         animalStatsBox.getChildren().add(new Label("Tracked animal stats:"));
         animalStatsBox.getChildren().add(new Label("Currently not tracking"));
         hBox.getChildren().add(vBox);
-        Scene scene = new Scene(new BorderPane(grid, null, hBox, animalStatsBox, null), TILE_SIZE * width + 200, TILE_SIZE * height+260);
+        Scene scene = new Scene(new BorderPane(grid, null, hBox, animalStatsBox, null), TILE_SIZE * width + 200, TILE_SIZE * height + 150);
 
         primaryStage.setTitle("The World");
         primaryStage.setScene(scene);
@@ -415,20 +418,21 @@ public class App extends Application {
                 }
 
                 if (paused.get()) {
-                    for (int row = 0; row < height; row++) {
-                        for (int col = 0; col < width; col++) {
-                            Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
-                            if (isPopular(row, col)) tile.setFill(Color.rgb(200, 0, 255));
+                    if (showPopular.get()) {
+                        for (int row = 0; row < height; row++) {
+                            for (int col = 0; col < width; col++) {
+                                Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
+                                if (isPopular(row, col)) tile.setFill(Color.rgb(200, 0, 255));
+                            }
                         }
+                        showPopular.set(false);
                     }
                     //tracking
                     for (int row = 0; row < height; row++) {
                         for (int col = 0; col < width; col++) {
                             Rectangle tile = (Rectangle) grid.getChildren().get(row * width + col);
 
-                            Integer x=col;
-                            Integer y=row;
-                            Vector2d here=new Vector2d(x, height-y-1);
+                            Vector2d here=new Vector2d(col, height- row -1);
                             tile.setOnMouseClicked(event -> {
 
                                 tracked=map.findStrongestAnimal(here);

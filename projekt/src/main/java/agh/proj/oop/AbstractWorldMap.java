@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AbstractWorldMap {
+abstract public class AbstractWorldMap {
     public int breedEnergy;
     public int growingGrass;
     public int grassEnergy;

@@ -1,4 +1,4 @@
 package agh.proj.oop;
 
-public class AbstractBehaviour {
+abstract public class AbstractBehaviour {
 }
