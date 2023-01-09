@@ -12,19 +12,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import java.io.FileWriter;
 import com.opencsv.CSVWriter;
+
+import org.json.JSONObject;
 
 public class App extends Application {
     private final BooleanProperty paused = new SimpleBooleanProperty(false);
@@ -38,8 +38,43 @@ public class App extends Application {
     private Animal tracked = null;
     private String fileName;
 
+    private void jsonReader(String mapType) {
+
+        String filePath = "src/main/resources/presets.json";
+        File file = new File(filePath);
+        FileReader reader;
+        try { reader = new FileReader(file);
+        } catch (FileNotFoundException e) { throw new RuntimeException(e); }
+        char[] chars = new char[(int) file.length()];
+        try { reader.read(chars);
+        } catch (IOException e) { throw new RuntimeException(e); }
+
+        String jsonString = new String(chars);
+        JSONObject json_raw = new JSONObject(jsonString);
+        JSONObject json = json_raw.getJSONObject(mapType);
+        width = json.getInt("width");
+        height = json.getInt("height");
+        mapVar = json.getInt("mapVar");
+        grassStart = json.getInt("grassStart");
+        grassEnergy = json.getInt("grassEnergy");
+        grassDaily = json.getInt("grassDaily");
+        grassVar = json.getInt("grassVar");
+        animalStart = json.getInt("animalStart");
+        animalStartEnergy = json.getInt("animalStartEnergy");
+        animalBreedEnergy = json.getInt("animalBreedEnergy");
+        genotypeLength = json.getInt("genotypeLength");
+        mutationMin = json.getInt("mutationMin");
+        mutationMax = json.getInt("mutationMax");
+        mutationVar = json.getInt("mutationVar");
+
+        try { reader.close();
+        } catch (IOException e) { throw new RuntimeException(e); }
+
+    }
+
     @Override
     public void start(Stage primaryStage) {
+
         TextField widthField = new TextField();
         TextField heightField = new TextField();
         TextField mapVarField = new TextField();
@@ -58,7 +93,6 @@ public class App extends Application {
         fileNameField.setPrefWidth(50);
 
         GridPane gridPane = new GridPane();
-
         gridPane.add(new Label("Width:"), 0, 0);
         gridPane.add(widthField, 1, 0);
         gridPane.add(new Label("Height:"), 0, 1);
@@ -102,198 +136,51 @@ public class App extends Application {
         Button ShortGenesButton = new Button("Short Genes");
         Button SaveButton = new Button("Save Data");
         XSButton.setOnAction(event -> {
-            width = 5;
-            height = 5;
-            mapVar = 0;
-            grassStart = 10;
-            grassEnergy = 10;
-            grassDaily = 5;
-            grassVar = 0;
-            animalStart = 5;
-            animalStartEnergy = 25;
-            animalBreedEnergy = 10;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar =  0;
+            jsonReader("XSMap");
             showGridScene(primaryStage);
         });
         SButton.setOnAction(event -> {
-            width = 25;
-            height = 25;
-            mapVar = 0;
-            grassStart = 50;
-            grassEnergy = 10;
-            grassDaily = 5;
-            grassVar = 0;
-            animalStart = 15;
-            animalStartEnergy = 50;
-            animalBreedEnergy = 25;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 10;
-            mutationVar =  0;
-            showGridScene(primaryStage);
-        });
-        XXLButton.setOnAction(event -> {
-            width = height = 300;
-            mapVar = 0;
-            grassStart = 150;
-            grassEnergy = 30;
-            grassDaily = 150;
-            grassVar = 0;
-            animalStart = 250;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 50;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar = 0;
-            showGridScene(primaryStage);
-        });
-        XLButton.setOnAction(event -> {
-            width = height = 200;
-            mapVar = 0;
-            grassStart = 100;
-            grassEnergy = 30;
-            grassDaily = 100;
-            grassVar = 0;
-            animalStart = 200;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 50;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar = 0;
-            showGridScene(primaryStage);
-        });
-        LButton.setOnAction(event -> {
-            width = height = 100;
-            mapVar = 0;
-            grassStart = 50;
-            grassEnergy = 30;
-            grassDaily = 50;
-            grassVar = 0;
-            animalStart = 100;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 50;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar = 0;
+            jsonReader("SMap");
             showGridScene(primaryStage);
         });
         MButton.setOnAction(event -> {
-            width = height = 50;
-            mapVar = 0;
-            grassStart = 25;
-            grassEnergy = 30;
-            grassDaily = 25;
-            grassVar = 0;
-            animalStart = 50;
-            animalStartEnergy = 50;
-            animalBreedEnergy = 50;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar = 0;
+            jsonReader("MMap");
+            showGridScene(primaryStage);
+        });
+        LButton.setOnAction(event -> {
+            jsonReader("LMap");
+            showGridScene(primaryStage);
+        });
+        XLButton.setOnAction(event -> {
+            jsonReader("XLMap");
+            showGridScene(primaryStage);
+        });
+        XXLButton.setOnAction(event -> {
+            jsonReader("XXLMap");
             showGridScene(primaryStage);
         });
         InsaneButton.setOnAction(event -> {
-            width = height = 50;
-            mapVar = 1;
-            grassStart = 0;
-            grassEnergy = 30;
-            grassDaily = 100;
-            grassVar = 1;
-            animalStart = 200;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 100;
-            genotypeLength = 25;
-            mutationMin = 20;
-            mutationMax = 25;
-            mutationVar = 1;
+            jsonReader("IMap");
             showGridScene(primaryStage);
         });
         CrazyButton.setOnAction(event -> {
-            width = height = 60;
-            mapVar = 1;
-            grassStart = 30;
-            grassEnergy = 30;
-            grassDaily = 50;
-            grassVar = 1;
-            animalStart = 120;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 150;
-            genotypeLength = 10;
-            mutationMin = 5;
-            mutationMax = 10;
-            mutationVar = 1;
+            jsonReader("CMap");
             showGridScene(primaryStage);
         });
         ClaustrophobiaButton.setOnAction(event -> {
-            width = height = 3;
-            mapVar = 0;
-            grassStart = 10;
-            grassEnergy = 30;
-            grassDaily = 10;
-            grassVar = 1;
-            animalStart = 50;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 80;
-            genotypeLength = 10;
-            mutationMin = 0;
-            mutationMax = 10;
-            mutationVar = 0;
+            jsonReader("C2Map");
             showGridScene(primaryStage);
         });
         EdenGardenButton.setOnAction(event -> {
-            width = height = 20;
-            mapVar = 0;
-            grassStart = 200;
-            grassEnergy = 50;
-            grassDaily = 2;
-            grassVar = 1;
-            animalStart = 2;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 100;
-            genotypeLength = 150;
-            mutationMin = 0;
-            mutationMax = 10;
-            mutationVar = 0;
+            jsonReader("EMap");
             showGridScene(primaryStage);
         });
         LongButton.setOnAction(event -> {
-            width = 150;
-            height = 65;
-            mapVar = 0;
-            grassStart = 50;
-            grassEnergy = 50;
-            grassDaily = 25;
-            grassVar = 0;
-            animalStart = 50;
-            animalStartEnergy = 100;
-            animalBreedEnergy = 50;
-            genotypeLength = 20;
-            mutationMin = 0;
-            mutationMax = 5;
-            mutationVar = 0;
+            jsonReader("L2Map");
             showGridScene(primaryStage);
         });
         ShortGenesButton.setOnAction(event -> {
-            width = height = 50;
-            mapVar = 0;
-            grassStart = 20;
-            grassEnergy = 10;
-            grassDaily = 15;
-            grassVar = 1;
-            animalStart = 50;
-            animalStartEnergy = 50;
-            animalBreedEnergy = 50;
-            genotypeLength = 3;
-            mutationMin = 2;
-            mutationMax = 3;
-            mutationVar = 1;
+            jsonReader("S2Map");
             showGridScene(primaryStage);
         });
         SaveButton.setOnAction(event -> {
@@ -308,7 +195,7 @@ public class App extends Application {
             grassEnergy = (!Objects.equals(grassEnergyField.getText(), "")) ? Integer.parseInt(grassEnergyField.getText()) : 10;
             grassDaily = (!Objects.equals(grassDailyField.getText(), "")) ? Integer.parseInt(grassDailyField.getText()) : 5;
             grassVar = (!Objects.equals(grassVarField.getText(), "")) ? Integer.parseInt(grassVarField.getText()) : 0;
-            animalStart = (!Objects.equals(animalStartField.getText(), "")) ? Integer.parseInt(animalStartField.getText()) : 10;
+            animalStart = (!Objects.equals(animalStartField.getText(), "")) ? Integer.parseInt(animalStartField.getText()) : 0;
             animalStartEnergy = (!Objects.equals(animalStartEnergyField.getText(), "")) ? Integer.parseInt(animalStartEnergyField.getText()) : 40;
             animalBreedEnergy = (!Objects.equals(animalBreedEnergyField.getText(), "")) ? Integer.parseInt(animalBreedEnergyField.getText()) : 25;
             genotypeLength = (!Objects.equals(genotypeLengthField.getText(), "")) ? Integer.parseInt(genotypeLengthField.getText()) : 10;
@@ -319,11 +206,9 @@ public class App extends Application {
         });
 
         VBox container = new VBox();
-
         container.getChildren().add(gridPane);
 
         GridPane buttonPane = new GridPane();
-
         buttonPane.add(applyButton,0,0);
         buttonPane.add(SaveButton, 1, 0);
         buttonPane.add(fileNameField, 2, 0);
@@ -350,7 +235,6 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 
     public void showGridScene(Stage primaryStage) {
 
