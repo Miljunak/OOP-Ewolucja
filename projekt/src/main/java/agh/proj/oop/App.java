@@ -187,22 +187,55 @@ public class App extends Application {
             saveData = !saveData;
             fileName = fileNameField.getText();
         });
+
         applyButton.setOnAction(event -> {
-            width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
-            height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
-            mapVar = (!Objects.equals(mapVarField.getText(), "")) ? Integer.parseInt(mapVarField.getText()) : 0;
-            grassStart = (!Objects.equals(grassStartField.getText(), "")) ? Integer.parseInt(grassStartField.getText()) : 10;
-            grassEnergy = (!Objects.equals(grassEnergyField.getText(), "")) ? Integer.parseInt(grassEnergyField.getText()) : 10;
-            grassDaily = (!Objects.equals(grassDailyField.getText(), "")) ? Integer.parseInt(grassDailyField.getText()) : 5;
-            grassVar = (!Objects.equals(grassVarField.getText(), "")) ? Integer.parseInt(grassVarField.getText()) : 0;
-            animalStart = (!Objects.equals(animalStartField.getText(), "")) ? Integer.parseInt(animalStartField.getText()) : 0;
-            animalStartEnergy = (!Objects.equals(animalStartEnergyField.getText(), "")) ? Integer.parseInt(animalStartEnergyField.getText()) : 40;
-            animalBreedEnergy = (!Objects.equals(animalBreedEnergyField.getText(), "")) ? Integer.parseInt(animalBreedEnergyField.getText()) : 25;
-            genotypeLength = (!Objects.equals(genotypeLengthField.getText(), "")) ? Integer.parseInt(genotypeLengthField.getText()) : 10;
-            mutationMin = (!Objects.equals(mutationMinField.getText(), "")) ? Integer.parseInt(mutationMinField.getText()) : 0;
-            mutationMax = (!Objects.equals(mutationMaxField.getText(), "")) ? Integer.parseInt(mutationMaxField.getText()) : 10;
-            mutationVar = (!Objects.equals(mutationVarField.getText(), "")) ? Integer.parseInt(mutationVarField.getText()) : 0;
-            showGridScene(primaryStage);
+            try {
+                width = (!Objects.equals(widthField.getText(), "")) ? Integer.parseInt(widthField.getText()) : 10;
+                height = (!Objects.equals(heightField.getText(), "")) ? Integer.parseInt(heightField.getText()) : 10;
+                mapVar = (!Objects.equals(mapVarField.getText(), "")) ? Integer.parseInt(mapVarField.getText()) : 0;
+                grassStart = (!Objects.equals(grassStartField.getText(), "")) ? Integer.parseInt(grassStartField.getText()) : 10;
+                grassEnergy = (!Objects.equals(grassEnergyField.getText(), "")) ? Integer.parseInt(grassEnergyField.getText()) : 10;
+                grassDaily = (!Objects.equals(grassDailyField.getText(), "")) ? Integer.parseInt(grassDailyField.getText()) : 5;
+                grassVar = (!Objects.equals(grassVarField.getText(), "")) ? Integer.parseInt(grassVarField.getText()) : 0;
+                animalStart = (!Objects.equals(animalStartField.getText(), "")) ? Integer.parseInt(animalStartField.getText()) : 0;
+                animalStartEnergy = (!Objects.equals(animalStartEnergyField.getText(), "")) ? Integer.parseInt(animalStartEnergyField.getText()) : 40;
+                animalBreedEnergy = (!Objects.equals(animalBreedEnergyField.getText(), "")) ? Integer.parseInt(animalBreedEnergyField.getText()) : 25;
+                genotypeLength = (!Objects.equals(genotypeLengthField.getText(), "")) ? Integer.parseInt(genotypeLengthField.getText()) : 10;
+                mutationMin = (!Objects.equals(mutationMinField.getText(), "")) ? Integer.parseInt(mutationMinField.getText()) : 0;
+                mutationMax = (!Objects.equals(mutationMaxField.getText(), "")) ? Integer.parseInt(mutationMaxField.getText()) : 10;
+                mutationVar = (!Objects.equals(mutationVarField.getText(), "")) ? Integer.parseInt(mutationVarField.getText()) : 0;
+                if(mutationMin>mutationMax || mutationMin<0) throw  new NumberFormatException("");
+                if(height==0 || width ==0) throw new NumberFormatException("");
+                if(genotypeLength<0) throw new NegativeArraySizeException("");
+                showGridScene(primaryStage);
+            }catch (NumberFormatException e) {
+                GridPane gP = new GridPane();
+                gP.add(new Label("Data entered incorrectly!"),0,0);
+                BorderPane borderPane = new BorderPane();
+                borderPane.setCenter(gP);
+                Scene scene = new Scene(borderPane, 200, 20); 		                        Stage stage = new Stage(); 		                        stage.setScene(scene);
+                stage.setTitle("");
+                stage.show();
+                System.out.println("Nieprawidłowo prowadzone dane!");
+            }catch (NegativeArraySizeException e){
+                GridPane gP = new GridPane();
+                gP.add(new Label("Data entered incorrectly!(Negative numbers)"),0,0);
+                BorderPane borderPane = new BorderPane();
+                borderPane.setCenter(gP);
+                Scene scene = new Scene(borderPane, 200, 20); 		                        Stage stage = new Stage(); 		                        stage.setScene(scene);
+                stage.setTitle("");
+                stage.show();
+                System.out.println("Nieprawidłowo prowadzone dane!");
+            }catch (IllegalArgumentException e){
+                GridPane gP = new GridPane();
+                gP.add(new Label("Too small map for this many objects!"),0,0);
+                BorderPane borderPane = new BorderPane();
+                borderPane.setCenter(gP);
+                Scene scene = new Scene(borderPane, 200, 20); 		                        Stage stage = new Stage(); 		                        stage.setScene(scene);
+                stage.setTitle("");
+                stage.show();
+                System.out.println("Obiekty nie zmieściły się na mapie!");
+            }
         });
 
         VBox container = new VBox();
